@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The server of a media social application",
   "main": "index.js",
-  "repository": "https://github.com/phuonghight/HIT-Circle.git",
+  "repository": "https://github.com/phuonghight/HIT-Circle-Social-Media.git",
   "author": "phuonghight <hoangphuong270703@gmail.com>",
   "license": "MIT",
   "scripts": {
