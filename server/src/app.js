@@ -40,7 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // health check
-app.get("/health", (req, res) =>
+app.get("/~", (req, res) =>
   res.json({ status: httpStatus.OK, message: messageConstant.healthy })
 );
 // api v1 routes

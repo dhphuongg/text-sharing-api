@@ -26,6 +26,11 @@ module.exports = {
     success: (content) =>
       `We just have send ${content} to your email. Check it now!`,
   },
+  database: {
+    type: "MySQL",
+    connectSuccess: "✅ MySQL Database is connected",
+    connectFail: "❌ Connect to MySQL Database is failed",
+  },
   required: (field) => `${field} is required!`,
   notFound: (field) => `${field} is not found!`,
 };

@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  fullName   String    @map("full_name")
+  email      String    @unique
+  username   String    @unique @db.VarChar(30)
+  password   String
+  avatar     String?
+  birthday   DateTime?
+  bio        String?   @db.VarChar(150)
+  role       Role      @default(USER)
+  followers  Follow[]  @relation(name: "followers")
+  followings Follow[]  @relation(name: "followings")
+  posts      Post[]
+  postsLiked Reation[]
+
+  @@map("users")
+}
+
+model Follow {
+  followById  String @map("follower_by_id")
+  followBy    User   @relation(name: "followers", fields: [followById], references: [id], onDelete: Cascade)
+  followingId String @map("following_id")
+  following   User   @relation(name: "followings", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followById, followingId])
+  @@map("follows")
+}
+
+enum PostType {
+  NEW
+  REPLY
+  QUOTE
+}
+
+model PostMedia {
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  mediaFileUrl String   @map("media_file_url")
+  postId       String   @map("post_id")
+  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("post_media")
+}
+
+model Post {
+  id        String      @id @default(uuid())
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+  content   String      @db.VarChar(500)
+  media     PostMedia[]
+  type      PostType    @default(NEW)
+  // author
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies   Post[]      @relation(name: "PostReplies")
+  // parent post
+  postId    String?     @map("post_id")
+  post      Post?       @relation(name: "PostReplies", fields: [postId], references: [id], onDelete: Cascade)
+  likers    Reation[]
+
+  @@map("posts")
+}
+
+model Reation {
+  postId String @map("post_id")
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+  @@map("reactions")
+}

@@ -15,9 +15,10 @@ module.exports = {
     refressExpMinutes: process.env.REFRESH_EXP_MINUTES,
   },
   admin: {
-    fullName: process.env.FULL_NAME,
-    email: process.env.EMAIL,
-    password: process.env.PASSWORD,
+    fullName: process.env.ADMIN_FULL_NAME,
+    email: process.env.ADMIN_EMAIL,
+    username: process.env.ADMIN_USERNAME,
+    password: process.env.ADMIN_PASSWORD,
   },
   otp: {
     exp: process.env.OTP_EXP_MINUTES,
