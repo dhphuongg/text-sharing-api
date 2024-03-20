@@ -1,12 +1,16 @@
 module.exports.messageConstant = require("./message.constant");
+module.exports.validationConstant = require("./validation.constant");
 module.exports.constants = {
+  message: this.messageConstant,
+  validation: this.validationConstant,
+  app: {
+    name: "HIT Circle",
+  },
   mode: {
     development: "development",
     production: "production",
     test: "test",
   },
-  passwordMinLength: 8,
-  otpLength: 6,
   pageDefault: 1,
   limitDefault: 10,
   sortByDefault: "createdAt",
@@ -16,7 +20,9 @@ module.exports.constants = {
     user: "USER",
     admin: "ADMIN",
   },
-  tokenType: "Bearer",
+  tokenType: {
+    access: "access",
+    refresh: "refresh",
+  },
   emptyString: "",
-  imageFileAllowed: [".png", ".jpg", ".jpeg", ".heic"],
 };

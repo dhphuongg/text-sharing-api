@@ -1,9 +1,17 @@
 const router = require("express").Router();
 
+const validate = require("../../middlewares/validate");
+const { authValidation } = require("../../validations");
 const { authController } = require("../../controllers");
 
 router
-  .post("/login", authController.login)
-  .post("/register", authController.register);
+  .post("/login", validate(authValidation.login), authController.login)
+  .post("/send-otp", validate(authValidation.sendOtp), authController.sendOtp)
+  .post("/register", validate(authValidation.register), authController.register)
+  .post(
+    "/reset-password",
+    validate(authValidation.resetPassword),
+    authController.resetPassword
+  );
 
 module.exports = router;

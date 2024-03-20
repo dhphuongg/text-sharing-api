@@ -1,0 +1,64 @@
+const httpStatus = require("http-status");
+
+const config = require("../config/config");
+const prisma = require("../prisma-client");
+const ApiError = require("../utils/ApiError");
+const { otpGenerator } = require("../utils/random");
+const { messageConstant, validationConstant } = require("../constants");
+
+const create = async (email) => {
+  const otp = await prisma.otp.create({
+    data: {
+      email,
+      otp: otpGenerator(validationConstant.otp.min, validationConstant.otp.max),
+      deletedAt: new Date(Date.now() + config.otp.exp * 60 * 1000),
+    },
+    include: { user: true },
+  });
+  otp.user && delete otp.user.password;
+  return otp;
+};
+
+const getByEmail = async (email) => {
+  const otp = await prisma.otp.findUnique({
+    where: { email },
+    include: { user: true },
+  });
+  otp.user && delete otp.user.password;
+  return otp;
+};
+
+const updateOtpByEmail = async (email) => {
+  const otp = await prisma.otp.update({
+    where: { email },
+    data: {
+      otp: otpGenerator(validationConstant.otp.min, validationConstant.otp.max),
+      deletedAt: new Date(Date.now() + config.otp.exp * 60 * 1000),
+    },
+    include: { user: true },
+  });
+  otp.user && delete otp.user.password;
+  return otp;
+};
+
+const verify = async (email, _otp) => {
+  const otp = await this.getByEmail(email);
+  if (!otp) {
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Email"));
+  }
+  if (otp.otp !== parseInt(_otp)) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.otp.invalid);
+  }
+  if (new Date(otp.deletedAt) < new Date()) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.otp.expired);
+  }
+  const newOtp = await prisma.otp.update({
+    where: { email },
+    data: { otp: 0 },
+    include: { user: true },
+  });
+  newOtp.user && delete newOtp.user.password;
+  return newOtp;
+};
+
+module.exports = { create, getByEmail, updateOtpByEmail, verify };

@@ -5,6 +5,9 @@ function pick(object = {}, keys = []) {
       newObj[key] = object[key];
     }
   });
+  if (keys.includes("headers") && "headers" in object) {
+    newObj["headers"] = object["headers"];
+  }
   return newObj;
 }
 

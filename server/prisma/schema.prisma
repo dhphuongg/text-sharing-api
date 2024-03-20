@@ -18,6 +18,16 @@ enum Role {
   USER
 }
 
+model Otp {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  email     String   @unique
+  otp       Int
+  user      User?
+  deletedAt DateTime @map("deleted_at")
+}
+
 model User {
   id         String    @id @default(uuid())
   createdAt  DateTime  @default(now()) @map("created_at")
@@ -34,6 +44,7 @@ model User {
   followings Follow[]  @relation(name: "followings")
   posts      Post[]
   postsLiked Reation[]
+  otp        Otp       @relation(fields: [email], references: [email])
 
   @@map("users")
 }

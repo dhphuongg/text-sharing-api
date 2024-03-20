@@ -7,9 +7,16 @@ module.exports = {
   },
   unauthorized:
     "Sorry, you do not have the necessary permissions to access this resource!",
+  account: {
+    incorrect: "Email or password is incorrect!",
+    already: "Email address is already!",
+  },
   password: {
     invalid: "Unsatisfactory password!",
     incorrect: "Incorrect password!",
+  },
+  username: {
+    invalid: "Unsatisfactory username!",
   },
   image: {
     invalid: "Only support .png, jpg, .jpeg, .heic image!",
