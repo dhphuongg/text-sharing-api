@@ -20,8 +20,8 @@ enum Role {
 
 model Otp {
   id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  updateAt  DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
   email     String   @unique
   otp       Int
   user      User?
@@ -30,8 +30,8 @@ model Otp {
 
 model User {
   id         String    @id @default(uuid())
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
+  createdAt  DateTime  @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  updateAt   DateTime  @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
   fullName   String    @map("full_name")
   email      String    @unique
   username   String    @unique @db.VarChar(30)
@@ -67,8 +67,8 @@ enum PostType {
 
 model PostMedia {
   id           String   @id @default(uuid())
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  createdAt    DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  updateAt     DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
   mediaFileUrl String   @map("media_file_url")
   postId       String   @map("post_id")
   post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -78,8 +78,8 @@ model PostMedia {
 
 model Post {
   id        String      @id @default(uuid())
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
+  createdAt DateTime    @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  updateAt  DateTime    @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
   content   String      @db.VarChar(500)
   media     PostMedia[]
   type      PostType    @default(NEW)
