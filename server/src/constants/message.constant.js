@@ -20,8 +20,13 @@ module.exports = {
   username: {
     invalid: "Unsatisfactory username!",
   },
-  image: {
-    invalid: "Only support .png, jpg, .jpeg, .heic image!",
+  post_media: {
+    invalid:
+      "Invalid media file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic, .mov, .mv4, .mp4 file!",
+  },
+  avatar: {
+    invalid:
+      "Invalid image file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic image!",
   },
   token: {
     invalid: "Invalid JWT token!",

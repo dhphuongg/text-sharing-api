@@ -1,4 +1,4 @@
-const { password } = require("./message.constant");
+const { password, avatar } = require("./message.constant");
 
 module.exports = {
   label: {
@@ -26,16 +26,34 @@ module.exports = {
       register: "Register",
     },
   },
-  mediaFileAllow: [
-    ".jfif",
-    ".pjpeg",
-    ".pjp",
-    ".jpeg",
-    ".jpg",
-    ".png",
-    ".heic",
-    ".mov",
-    ".mv4",
-    ".mp4",
-  ],
+  bio: {
+    maxLength: 500,
+  },
+  birthday: {
+    min: "1900-01-01",
+    max: "2018-01-01",
+  },
+  avatar: {
+    allow: [".jfif", ".pjpeg", ".pjp", ".jpeg", ".jpg", ".png", ".heic"],
+    maxSize: 10,
+  },
+  post_media: {
+    allow: [
+      ".jfif",
+      ".pjpeg",
+      ".pjp",
+      ".jpeg",
+      ".jpg",
+      ".png",
+      ".heic",
+      ".mov",
+      ".mv4",
+      ".mp4",
+    ],
+    maxSize: 1024,
+  },
+  fieldname: {
+    avatar: "avatar",
+    postMedia: "post_media",
+  },
 };

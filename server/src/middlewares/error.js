@@ -1,10 +1,12 @@
 const httpStatus = require("http-status");
 const { Prisma } = require("@prisma/client");
+const multer = require("multer");
 
 const config = require("../config/config");
 const ApiError = require("../utils/ApiError");
 const logger = require("../config/winston.config");
 const { messageConstant, constants } = require("../constants");
+const destroyFileByPath = require("../utils/destroyFile");
 
 const handlePrismaError = (err) => {
   switch (err.code) {
@@ -31,21 +33,41 @@ const handlePrismaError = (err) => {
   }
 };
 
-const errorConverter = (err, req, res, next) => {
+const multerErrorMessages = {
+  LIMIT_PART_COUNT: "Too many parts",
+  LIMIT_FILE_SIZE: "File too large",
+  LIMIT_FILE_COUNT: "Too many files",
+  LIMIT_FIELD_KEY: "Field name too long",
+  LIMIT_FIELD_VALUE: "Field value too long",
+  LIMIT_FIELD_COUNT: "Too many fields",
+  LIMIT_UNEXPECTED_FILE: "Unexpected field",
+  MISSING_FIELD_NAME: "Field name missing",
+};
+
+const handleMulterError = (err) => {
+  console.log(err);
+  return new ApiError(httpStatus.BAD_REQUEST, multerErrorMessages[err.code]);
+};
+
+const errorConverter = async (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    // A Multer error occurred when uploading.
+    err = handleMulterError(err);
+  }
+  if (req.file && req.file.path) {
+    await destroyFileByPath(req.file.path);
+  }
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     err = handlePrismaError(err);
-  }
-  if (err instanceof ApiError) return next(err);
-  if (err.name === "JsonWebTokenError") {
+  } else if (err.name === "JsonWebTokenError") {
     return next(
       new ApiError(httpStatus.UNAUTHORIZED, messageConstant.token.invalid)
     );
-  }
-  if (err.name === "TokenExpiredError") {
+  } else if (err.name === "TokenExpiredError") {
     return next(
       new ApiError(httpStatus.UNAUTHORIZED, messageConstant.token.expired)
     );
-  }
+  } else if (err instanceof ApiError) return next(err);
   return next(
     new ApiError(
       err.status || httpStatus.INTERNAL_SERVER_ERROR,

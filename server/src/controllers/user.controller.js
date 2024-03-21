@@ -4,6 +4,7 @@ const httpStatus = require("http-status");
 const { userService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
+const destroyFileByPath = require("../utils/destroyFile");
 const ApiError = require("../utils/ApiError");
 const { messageConstant } = require("../constants");
 
@@ -26,4 +27,21 @@ const changePassword = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { changePassword };
+const updateProfile = catchAsync(async (req, res, next) => {
+  const data = pick(req.body, ["fullName", "username", "birthday", "bio"]);
+  if (req.file) {
+    data.avatar = req.file.path.replace(/\\/g, "/");
+    req.auth.avatar && (await destroyFileByPath(req.auth.avatar));
+  }
+
+  const user = await userService.updateById(req.auth.id, data);
+  delete user.password;
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: user,
+    error: null,
+  });
+});
+
+module.exports = { changePassword, updateProfile };

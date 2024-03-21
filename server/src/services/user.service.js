@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const moment = require("moment");
 
 const prisma = require("../prisma-client");
 const { constants } = require("../constants");
@@ -23,4 +24,15 @@ const updatePasswordById = async (id, password) => {
   return await prisma.user.update({ where: { id }, data: { password } });
 };
 
-module.exports = { create, getById, getByEmail, updatePasswordById };
+const updateById = async (id, data) => {
+  if (data.birthday) data.birthday = new Date(data.birthday);
+  return await prisma.user.update({ where: { id }, data });
+};
+
+module.exports = {
+  create,
+  getById,
+  getByEmail,
+  updatePasswordById,
+  updateById,
+};

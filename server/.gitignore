@@ -26,5 +26,7 @@ backup
 
 prisma/migrations
 
+uploads/*/*
+static/*/*
 !uploads/*/.gitkeep
 !static/*/.gitkeep
