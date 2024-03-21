@@ -24,7 +24,7 @@ const getByEmail = async (email) => {
     where: { email },
     include: { user: true },
   });
-  otp.user && delete otp.user.password;
+  otp && otp.user && delete otp.user.password;
   return otp;
 };
 
@@ -42,7 +42,7 @@ const updateOtpByEmail = async (email) => {
 };
 
 const verify = async (email, _otp) => {
-  const otp = await this.getByEmail(email);
+  const otp = await getByEmail(email);
   if (!otp) {
     throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Email"));
   }

@@ -44,6 +44,7 @@ const sendOtp = async (email, job) => {
   if (oldOtp) {
     newOtp = await otpService.updateOtpByEmail(email);
     if (job === constants.validation.otp.job.register && oldOtp.user) {
+      throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.account.already)
     }
   } else newOtp = await otpService.create(email);
 
