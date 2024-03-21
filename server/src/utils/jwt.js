@@ -12,12 +12,8 @@ const generateToken = (sub, type) => {
 };
 
 const verifyToken = (token) => {
-  try {
-    const decode = jwt.verify(token, config.jwt.secret);
-    return decode;
-  } catch (error) {
-    throw new Error(error);
-  }
+  const decode = jwt.verify(token, config.jwt.secret);
+  return decode;
 };
 
 module.exports = { generateToken, verifyToken };

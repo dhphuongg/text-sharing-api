@@ -56,7 +56,6 @@ const sendOtp = async (email, job) => {
 };
 
 const resetPassword = async (userId, password) => {
-  password = bcrypt.hashSync(password, constants.bcryptSalt);
   return await userService.updatePasswordById(userId, password);
 };
 

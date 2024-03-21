@@ -14,6 +14,8 @@ module.exports = {
   password: {
     invalid: "Unsatisfactory password!",
     incorrect: "Incorrect password!",
+    resetSuccess: "Reset password successful!",
+    changeSuccess: "Change password successfull!",
   },
   username: {
     invalid: "Unsatisfactory username!",

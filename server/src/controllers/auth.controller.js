@@ -52,7 +52,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: "Reset password successful!",
+    data: messageConstant.password.resetSuccess,
     error: null,
   });
 });

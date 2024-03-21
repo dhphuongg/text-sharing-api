@@ -1,4 +1,7 @@
+const bcrypt = require('bcrypt');
+
 const prisma = require("../prisma-client");
+const { constants } = require("../constants");
 
 const create = async ({ fullName, email, username, password }) => {
   const user = await prisma.user.create({
@@ -16,6 +19,7 @@ const getByEmail = async (email) => {
 };
 
 const updatePasswordById = async (id, password) => {
+  password = bcrypt.hashSync(password, constants.bcryptSalt);
   return await prisma.user.update({ where: { id }, data: { password } });
 };
 
