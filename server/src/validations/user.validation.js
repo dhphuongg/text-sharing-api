@@ -11,9 +11,6 @@ const changePassword = {
 };
 
 const updateUser = {
-  param: Joi.object().keys({
-    id: Joi.string().uuid().required(),
-  }),
   body: Joi.object({
     fullName: Joi.string()
       .optional()

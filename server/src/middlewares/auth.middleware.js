@@ -8,7 +8,7 @@ const { userService } = require("../services");
 const ApiError = require("../utils/ApiError");
 
 const bearer = "Bearer";
-const auth = (roles = [constants.role.user]) =>
+const authorize = (roles = [constants.role.user]) =>
   catchAsync(async (req, res, next) => {
     const token = req.headers.authorization?.replace(
       `${bearer} `,
@@ -35,4 +35,4 @@ const auth = (roles = [constants.role.user]) =>
     return next();
   });
 
-module.exports = auth;
+module.exports = authorize;
