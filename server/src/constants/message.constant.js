@@ -40,6 +40,10 @@ module.exports = {
     success: (content) =>
       `We just have send ${content} to your email. Check it now!`,
   },
+  follow: {
+    selfFollow: "Can not self-follow!",
+    selfUnfollow: "Can not self-unfollow!",
+  },
   database: {
     type: "MySQL",
     connectSuccess: "✅ MySQL Database is connected",
@@ -47,4 +51,5 @@ module.exports = {
   },
   required: (field) => `${field} is required!`,
   notFound: (field) => `${field} is not found!`,
+  already: (field) => `${field} is already!`,
 };
