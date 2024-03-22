@@ -1,21 +1,21 @@
 const router = require("express").Router();
 
-const { auth, validate, upload } = require("../../middlewares");
+const { validate, upload } = require("../../middlewares");
 const { userValidation } = require("../../validations");
 const { userController } = require("../../controllers");
-const { validationConstant, constants } = require("../../constants");
+const { validationConstant } = require("../../constants");
 
 router
+  .get("/:id", validate(userValidation.getById), userController.getById)
+  .get("/", userController.getProfile)
   .patch(
     "/",
-    auth([constants.role.user]),
     upload.single(validationConstant.fieldname.avatar),
     validate(userValidation.updateUser),
     userController.updateProfile
   )
   .patch(
     "/change-password",
-    auth([constants.role.user]),
     validate(userValidation.changePassword),
     userController.changePassword
   );

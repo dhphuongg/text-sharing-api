@@ -8,25 +8,37 @@ const create = async ({ fullName, email, username, password }) => {
   const user = await prisma.user.create({
     data: { fullName, email, username, password },
   });
+  user && delete user.password;
   return user;
 };
 
 const getById = async (id) => {
-  return await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: { followers: true },
+  });
+  user.friendshipStatus = null;
+  user && delete user.password;
+  return user;
 };
 
 const getByEmail = async (email) => {
-  return await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email } });
+  return user;
 };
 
 const updatePasswordById = async (id, password) => {
   password = bcrypt.hashSync(password, constants.bcryptSalt);
-  return await prisma.user.update({ where: { id }, data: { password } });
+  const user = await prisma.user.update({ where: { id }, data: { password } });
+  user && delete user.password;
+  return user;
 };
 
 const updateById = async (id, data) => {
   if (data.birthday) data.birthday = new Date(data.birthday);
-  return await prisma.user.update({ where: { id }, data });
+  const user = await prisma.user.update({ where: { id }, data });
+  user && delete user.password;
+  return user;
 };
 
 module.exports = {

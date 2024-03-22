@@ -21,7 +21,6 @@ const login = async ({ email, password }) => {
   }
   const accessToken = jwt.generateToken(user.id, constants.tokenType.access);
   const refreshToken = jwt.generateToken(user.id, constants.tokenType.refresh);
-  delete user.password;
   return { user, accessToken, refreshToken };
 };
 
@@ -33,7 +32,6 @@ const register = async ({ fullName, email, username, password }) => {
     username,
     password,
   });
-  delete user.password;
   return user;
 };
 

@@ -25,4 +25,10 @@ const updateUser = {
   }).options({ stripUnknown: true }),
 };
 
-module.exports = { changePassword, updateUser };
+const getById = {
+  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+    stripUnknown: true,
+  }),
+};
+
+module.exports = { changePassword, updateUser, getById };

@@ -35,7 +35,6 @@ const updateProfile = catchAsync(async (req, res, next) => {
   }
 
   const user = await userService.updateById(req.auth.id, data);
-  delete user.password;
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
@@ -44,4 +43,31 @@ const updateProfile = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { changePassword, updateProfile };
+const getById = catchAsync(async (req, res, next) => {
+  const { id } = pick(req.params, ["id"]);
+  const user = await userService.getById(id);
+  if (req.auth) {
+    user.friendshipStatus = {
+      following: user.followers.some((f) => f.followById === req.auth.id),
+      followedBy: req.auth.followers.some((f) => f.followById === user.id),
+    };
+  }
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: user,
+    error: null,
+  });
+});
+
+const getProfile = catchAsync(async (req, res, next) => {
+  const user = await userService.getById(req.auth.id);
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: user,
+    error: null,
+  });
+});
+
+module.exports = { changePassword, updateProfile, getById, getProfile };
