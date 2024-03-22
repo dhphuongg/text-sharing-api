@@ -14,7 +14,7 @@ prisma
       await prisma.otp.create({
         data: {
           email: config.admin.email,
-          otp: 0,
+          code: 0,
           deletedAt: new Date(),
         },
       });

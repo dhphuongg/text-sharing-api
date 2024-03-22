@@ -3,7 +3,11 @@ const httpStatus = require("http-status");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
 const { authService, otpService } = require("../services");
-const { messageConstant, constants } = require("../constants");
+const {
+  messageConstant,
+  constants,
+  validationConstant,
+} = require("../constants");
 
 const login = catchAsync(async (req, res, next) => {
   const body = pick(req.body, ["email", "password"]);
@@ -18,7 +22,11 @@ const login = catchAsync(async (req, res, next) => {
 
 const register = catchAsync(async (req, res, next) => {
   const body = pick(req.body, ["fullName", "username", "email", "password"]);
-  await otpService.verify(body.email, req.headers.otp);
+  await otpService.verify(
+    body.email,
+    req.headers.otp,
+    validationConstant.otp.job.register
+  );
   const user = await authService.register(body);
   return res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
@@ -46,8 +54,12 @@ const sendOtp = catchAsync(async (req, res, next) => {
 
 const resetPassword = catchAsync(async (req, res, next) => {
   const { email, password } = pick(req.body, ["email", "password"]);
-  const { otp } = pick(req.headers, ["otp"]);
-  const o = await otpService.verify(email, otp);
+  const { otp: otpCode } = pick(req.headers, ["otp"]);
+  const o = await otpService.verify(
+    email,
+    otpCode,
+    validationConstant.otp.job.resetPassword
+  );
   await authService.resetPassword(o.user.id, password);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,

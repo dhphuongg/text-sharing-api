@@ -23,7 +23,8 @@ module.exports = {
     min: 100000,
     max: 999999,
     job: {
-      register: "Register",
+      register: "REGISTER",
+      resetPassword: "RESET_PASSWORD",
     },
   },
   bio: {

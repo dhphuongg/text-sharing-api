@@ -18,12 +18,18 @@ enum Role {
   USER
 }
 
+enum OtpJob {
+  REGISTER
+  RESET_PASSWORD
+}
+
 model Otp {
   id        String   @id @default(uuid())
   createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
   updateAt  DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
   email     String   @unique
-  otp       Int
+  code      Int
+  job       OtpJob?
   user      User?
   deletedAt DateTime @map("deleted_at")
 }

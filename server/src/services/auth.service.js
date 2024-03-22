@@ -41,16 +41,36 @@ const sendOtp = async (email, job) => {
   const oldOtp = await otpService.getByEmail(email);
 
   let newOtp;
-  if (oldOtp) {
-    newOtp = await otpService.updateOtpByEmail(email);
-    if (job === constants.validation.otp.job.register && oldOtp.user) {
-      throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.account.already)
+  if (job === constants.validation.otp.job.resetPassword) {
+    if (!oldOtp || !oldOtp.user) {
+      throw new ApiError(
+        httpStatus.NOT_FOUND,
+        messageConstant.notFound("Email")
+      );
     }
-  } else newOtp = await otpService.create(email);
+    newOtp = await otpService.updateOtpByEmail(email, job);
+  } else if (job === constants.validation.otp.job.register) {
+    if (oldOtp) {
+      if (oldOtp.user) {
+        throw new ApiError(
+          httpStatus.BAD_REQUEST,
+          messageConstant.account.already
+        );
+      }
+      newOtp = await otpService.updateOtpByEmail(email, job);
+    } else {
+      newOtp = await otpService.create(email, job);
+    }
+  }
+
+  const jobMailShow = {
+    [constants.validation.otp.job.register]: "Register",
+    [constants.validation.otp.job.resetPassword]: "Reset password",
+  };
 
   const template = await ejs.renderFile(
     path.join(__dirname, "../templates/send-otp.template.ejs"),
-    { job, exp: config.otp.exp, otp: newOtp.otp }
+    { job: jobMailShow[job], exp: config.otp.exp, otpCode: newOtp.code }
   );
   mailService.sendMail(email, `${constants.app.name} OTP`, template);
   return newOtp;

@@ -61,7 +61,9 @@ const sendOtp = {
     .options({ stripUnknown: true }),
   query: Joi.object()
     .keys({
-      job: Joi.string().required(),
+      job: Joi.string()
+        .valid(...Object.values(validationConstant.otp.job))
+        .required(),
     })
     .options({ stripUnknown: true }),
 };
