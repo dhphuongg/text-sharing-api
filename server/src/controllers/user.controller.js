@@ -46,7 +46,13 @@ const updateProfile = catchAsync(async (req, res, next) => {
 const getById = catchAsync(async (req, res, next) => {
   const { id } = pick(req.params, ["id"]);
   const user = await userService.getById(id);
-  if (req.auth) {
+  if (!user) {
+    return next(
+      new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("User"))
+    );
+  }
+  user.friendshipStatus = null;
+  if (req.auth && req.auth.id !== id) {
     user.friendshipStatus = {
       following: user.followers.some((f) => f.followById === req.auth.id),
       followedBy: req.auth.followers.some((f) => f.followById === user.id),

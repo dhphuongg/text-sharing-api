@@ -17,7 +17,6 @@ const getById = async (id) => {
     where: { id },
     include: { followers: true },
   });
-  user.friendshipStatus = null;
   user && delete user.password;
   return user;
 };
