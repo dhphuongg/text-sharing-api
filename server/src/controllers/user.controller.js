@@ -5,6 +5,7 @@ const { userService, followService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
 const { getOptions } = require("../utils/getPaginationAndSort");
+const { determineFriendshipStatus } = require("../utils/friendshipStatus");
 const destroyFileByPath = require("../utils/destroyFile");
 const ApiError = require("../utils/ApiError");
 const { messageConstant } = require("../constants");
@@ -52,17 +53,13 @@ const getById = catchAsync(async (req, res, next) => {
       new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("User"))
     );
   }
-  user.friendshipStatus = null;
-  if (req.auth && req.auth.id !== id) {
-    user.friendshipStatus = {
-      following: user.followers.some((f) => f.followById === req.auth.id),
-      followedBy: req.auth.followers.some((f) => f.followById === user.id),
-    };
-  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: user,
+    data: {
+      ...user,
+      friendshipStatus: determineFriendshipStatus(req.auth, user),
+    },
     error: null,
   });
 });
@@ -89,23 +86,41 @@ const getFollowersById = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: {
-      users: followers.map((follower) => {
-        let friendshipStatus = null;
-        if (follower.followBy.id !== req.auth.id) {
-          friendshipStatus = {
-            followedBy: req.auth.followers.some(
-              (f) => f.followById === follower.followBy.id
-            ),
-            following: follower.followBy.followers.some(
-              (f) => f.followById === req.auth.id
-            ),
-          };
-        }
-        return {
-          ...follower.followBy,
-          friendshipStatus,
-        };
-      }),
+      users: followers.map((follower) => ({
+        ...follower.followBy,
+        friendshipStatus: determineFriendshipStatus(
+          req.auth,
+          follower.followBy
+        ),
+      })),
+      limit,
+      page,
+      total,
+      sortBy,
+    },
+    error: null,
+  });
+});
+
+const getFollowingById = catchAsync(async (req, res, next) => {
+  const { id } = pick(req.params, ["id"]);
+  const { limit, page, sortBy } = getOptions(req.query);
+  const { following, total } = await followService.getFollowingById(id, {
+    limit,
+    page,
+    sortBy,
+  });
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: {
+      users: following.map((follower) => ({
+        ...follower.following,
+        friendshipStatus: determineFriendshipStatus(
+          req.auth,
+          follower.following
+        ),
+      })),
       limit,
       page,
       total,
@@ -118,7 +133,8 @@ const getFollowersById = catchAsync(async (req, res, next) => {
 module.exports = {
   getById,
   getProfile,
-  getFollowersById,
   changePassword,
   updateProfile,
+  getFollowersById,
+  getFollowingById,
 };

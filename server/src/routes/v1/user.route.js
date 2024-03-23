@@ -23,6 +23,11 @@ router
     "/:id/followers",
     validate(userValidation.getById),
     userController.getFollowersById
+  )
+  .get(
+    "/:id/following",
+    validate(userValidation.getById),
+    userController.getFollowingById
   );
 
 module.exports = router;
