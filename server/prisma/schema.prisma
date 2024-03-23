@@ -47,7 +47,7 @@ model User {
   bio        String?   @db.VarChar(150)
   role       Role      @default(USER)
   followers  Follow[]  @relation(name: "follower")
-  followings Follow[]  @relation(name: "following")
+  following  Follow[]  @relation(name: "following")
   posts      Post[]
   postsLiked Reation[]
   otp        Otp       @relation(fields: [email], references: [email])
