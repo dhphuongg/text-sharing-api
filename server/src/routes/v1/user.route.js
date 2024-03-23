@@ -18,6 +18,11 @@ router
     "/change-password",
     validate(userValidation.changePassword),
     userController.changePassword
+  )
+  .get(
+    "/:id/followers",
+    validate(userValidation.getById),
+    userController.getFollowersById
   );
 
 module.exports = router;

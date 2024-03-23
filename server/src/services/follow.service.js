@@ -37,4 +37,32 @@ const deleteById = async (followById, followingId) => {
   return follow;
 };
 
-module.exports = { getById, createById, deleteById };
+const getFollowersById = async (id, { limit, page, sortBy }) => {
+  const [followers, total] = await prisma.$transaction([
+    prisma.follow.findMany({
+      where: {
+        followingId: id,
+      },
+      select: {
+        followBy: {
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+            avatar: true,
+            followers: true,
+          },
+        },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: {
+        [sortBy]: "desc",
+      },
+    }),
+    prisma.follow.count({ where: { followingId: id } }),
+  ]);
+  return { followers, total };
+};
+
+module.exports = { getById, createById, deleteById, getFollowersById };

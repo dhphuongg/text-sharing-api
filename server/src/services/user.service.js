@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const moment = require("moment");
 
 const prisma = require("../prisma-client");
 const { constants } = require("../constants");

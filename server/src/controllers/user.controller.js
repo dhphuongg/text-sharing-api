@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt");
 const httpStatus = require("http-status");
 
-const { userService } = require("../services");
+const { userService, followService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
+const { getOptions } = require("../utils/getPaginationAndSort");
 const destroyFileByPath = require("../utils/destroyFile");
 const ApiError = require("../utils/ApiError");
 const { messageConstant } = require("../constants");
@@ -76,4 +77,48 @@ const getProfile = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { changePassword, updateProfile, getById, getProfile };
+const getFollowersById = catchAsync(async (req, res, next) => {
+  const { id } = pick(req.params, ["id"]);
+  const { limit, page, sortBy } = getOptions(req.query);
+  const { followers, total } = await followService.getFollowersById(id, {
+    limit,
+    page,
+    sortBy,
+  });
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: {
+      users: followers.map((follower) => {
+        let friendshipStatus = null;
+        if (follower.followBy.id !== req.auth.id) {
+          friendshipStatus = {
+            followedBy: req.auth.followers.some(
+              (f) => f.followById === follower.followBy.id
+            ),
+            following: follower.followBy.followers.some(
+              (f) => f.followById === req.auth.id
+            ),
+          };
+        }
+        return {
+          ...follower.followBy,
+          friendshipStatus,
+        };
+      }),
+      limit,
+      page,
+      total,
+      sortBy,
+    },
+    error: null,
+  });
+});
+
+module.exports = {
+  getById,
+  getProfile,
+  getFollowersById,
+  changePassword,
+  updateProfile,
+};
