@@ -6,6 +6,7 @@ const pick = require("../utils/pick");
 const { messageConstant, validationConstant } = require("../constants");
 const ApiError = require("../utils/ApiError");
 const destroyFileByPath = require("../utils/destroyFile");
+const { getOptions } = require("../utils/getPaginationAndSort");
 
 const createNewPost = catchAsync(async (req, res, next) => {
   const { content, type, postRefId } = pick(req.body, [
@@ -65,6 +66,28 @@ const getById = catchAsync(async (req, res, next) => {
   });
 });
 
+const getRepliesById = catchAsync(async (req, res, next) => {
+  const { id } = pick(req.params, ["id"]);
+  const { limit, page, sortBy } = getOptions(req.query);
+  const { replies, total } = await postService.getRepliesById(id, {
+    limit,
+    page,
+    sortBy,
+  });
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: {
+      replies: replies,
+      limit,
+      page,
+      sortBy,
+      total,
+    },
+    error: null,
+  });
+});
+
 const editContentById = catchAsync(async (req, res, next) => {
   const { id } = pick(req.params, ["id"]);
   const { content } = pick(req.body, ["content"]);
@@ -91,4 +114,10 @@ const deleteById = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { createNewPost, getById, editContentById, deleteById };
+module.exports = {
+  createNewPost,
+  getById,
+  getRepliesById,
+  editContentById,
+  deleteById,
+};

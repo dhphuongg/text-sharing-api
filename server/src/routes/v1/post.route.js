@@ -7,6 +7,11 @@ const router = require("express").Router();
 
 router
   .get("/:id", validate(postValidation.getById), postController.getById)
+  .get(
+    "/:id/replies",
+    validate(postValidation.getRepliesById),
+    postController.getRepliesById
+  )
   .post(
     "/",
     upload.array(

@@ -17,6 +17,17 @@ const getById = {
   }),
 };
 
+const getRepliesById = {
+  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+    stripUnknown: true,
+  }),
+  query: Joi.object({
+    limit: Joi.number().min(1).optional(),
+    page: Joi.number().min(1).optional(),
+    sortBy: Joi.string().optional(),
+  }).options({ stripUnknown: true }),
+};
+
 const editContentByID = {
   body: Joi.object({
     content: Joi.string().max(500).required(),
@@ -26,4 +37,4 @@ const editContentByID = {
   }),
 };
 
-module.exports = { createNewPost, getById, editContentByID };
+module.exports = { createNewPost, getById, getRepliesById, editContentByID };

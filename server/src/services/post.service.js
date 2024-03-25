@@ -53,6 +53,48 @@ const getById = async (id) => {
   return post;
 };
 
+const getRepliesById = async (id, { limit, page, sortBy }) => {
+  const [replies, total] = await prisma.$transaction([
+    prisma.post.findUnique({
+      where: { id },
+      select: {
+        replies: {
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            media: { select: { id: true, mediaFileUrl: true } },
+            likers: { select: { userId: true } },
+            user: {
+              select: {
+                id: true,
+                avatar: true,
+                fullName: true,
+                username: true,
+              },
+            },
+            replies: { select: { id: true } },
+          },
+          take: limit,
+          skip: (page - 1) * limit,
+          orderBy: [{ likers: { _count: "desc" } }, { [sortBy]: "desc" }],
+        },
+      },
+    }),
+    prisma.post.findUnique({
+      where: { id },
+      select: {
+        _count: {
+          select: {
+            replies: true,
+          },
+        },
+      },
+    }),
+  ]);
+  return { replies: replies.replies, total: total._count.replies };
+};
+
 const editContentById = async (id, content) => {
   const post = await prisma.post.update({
     where: { id },
@@ -108,4 +150,10 @@ const deleteById = async (id) => {
   return post;
 };
 
-module.exports = { createNewPost, getById, editContentById, deleteById };
+module.exports = {
+  createNewPost,
+  getById,
+  getRepliesById,
+  editContentById,
+  deleteById,
+};
