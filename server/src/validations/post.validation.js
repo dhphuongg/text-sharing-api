@@ -17,4 +17,13 @@ const getById = {
   }),
 };
 
-module.exports = { createNewPost, getById };
+const editContentByID = {
+  body: Joi.object({
+    content: Joi.string().max(500).required(),
+  }).options({ stripUnknown: true }),
+  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+    stripUnknown: true,
+  }),
+};
+
+module.exports = { createNewPost, getById, editContentByID };

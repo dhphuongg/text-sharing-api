@@ -65,6 +65,18 @@ const getById = catchAsync(async (req, res, next) => {
   });
 });
 
+const editContentById = catchAsync(async (req, res, next) => {
+  const { id } = pick(req.params, ["id"]);
+  const { content } = pick(req.body, ["content"]);
+  const post = await postService.editContentById(id, content);
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: post,
+    error: null,
+  });
+});
+
 const deleteById = catchAsync(async (req, res, next) => {
   const { id } = pick(req.params, ["id"]);
   const post = await postService.deleteById(id);
@@ -79,4 +91,4 @@ const deleteById = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { createNewPost, getById, deleteById };
+module.exports = { createNewPost, getById, editContentById, deleteById };

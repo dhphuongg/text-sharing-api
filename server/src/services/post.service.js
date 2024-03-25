@@ -53,6 +53,53 @@ const getById = async (id) => {
   return post;
 };
 
+const editContentById = async (id, content) => {
+  const post = await prisma.post.update({
+    where: { id },
+    data: { content },
+    select: {
+      id: true,
+      createdAt: true,
+      content: true,
+      type: true,
+      media: {
+        select: { id: true, createdAt: true, mediaFileUrl: true },
+        orderBy: { createdAt: "desc" },
+      },
+      user: {
+        select: {
+          id: true,
+          avatar: true,
+          fullName: true,
+          username: true,
+        },
+      },
+      likers: { select: { userId: true } },
+      replies: { select: { id: true } },
+      postRef: {
+        select: {
+          id: true,
+          createdAt: true,
+          content: true,
+          type: true,
+          media: {
+            select: { id: true, mediaFileUrl: true },
+          },
+          user: {
+            select: {
+              id: true,
+              avatar: true,
+              fullName: true,
+              username: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return post;
+};
+
 const deleteById = async (id) => {
   const post = await prisma.post.delete({
     where: { id },
@@ -61,4 +108,4 @@ const deleteById = async (id) => {
   return post;
 };
 
-module.exports = { createNewPost, getById, deleteById };
+module.exports = { createNewPost, getById, editContentById, deleteById };

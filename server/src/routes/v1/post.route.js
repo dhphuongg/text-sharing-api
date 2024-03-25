@@ -16,6 +16,11 @@ router
     validate(postValidation.createNewPost),
     postController.createNewPost
   )
+  .patch(
+    "/:id",
+    validate(postValidation.editContentByID),
+    postController.editContentById
+  )
   .delete("/:id", validate(postValidation.getById), postController.deleteById);
 
 module.exports = router;
