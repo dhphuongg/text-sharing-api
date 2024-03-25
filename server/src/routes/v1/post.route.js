@@ -6,7 +6,7 @@ const { postValidation } = require("../../validations");
 const router = require("express").Router();
 
 router
-  .get("/:id", postController.getById)
+  .get("/:id", validate(postValidation.getById), postController.getById)
   .post(
     "/",
     upload.array(
@@ -15,6 +15,7 @@ router
     ),
     validate(postValidation.createNewPost),
     postController.createNewPost
-  );
+  )
+  .delete("/:id", validate(postValidation.getById), postController.deleteById);
 
 module.exports = router;

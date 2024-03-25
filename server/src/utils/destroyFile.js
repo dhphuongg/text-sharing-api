@@ -5,7 +5,6 @@ const logger = require("../config/winston.config");
 
 const destroyFileByPath = async (_path) => {
   const filePath = path.join(__dirname, "../../", _path);
-  console.log(filePath);
   fs.exists(filePath, (exists) => {
     if (exists) {
       fs.unlink(filePath, (err) => {

@@ -53,4 +53,12 @@ const getById = async (id) => {
   return post;
 };
 
-module.exports = { createNewPost, getById };
+const deleteById = async (id) => {
+  const post = await prisma.post.delete({
+    where: { id },
+    include: { media: true },
+  });
+  return post;
+};
+
+module.exports = { createNewPost, getById, deleteById };

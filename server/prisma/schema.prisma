@@ -96,7 +96,7 @@ model Post {
   replies   Post[]      @relation(name: "PostReplies")
   // post reference
   postRefId String?     @map("post_ref_id")
-  postRef   Post?       @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: Cascade)
+  postRef   Post?       @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: SetNull)
   likers    Reation[]
 
   @@map("posts")

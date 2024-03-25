@@ -41,7 +41,7 @@ const unfollow = catchAsync(async (req, res, next) => {
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: follow,
+    data: null,
     error: null,
   });
 });
