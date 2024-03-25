@@ -26,7 +26,7 @@ app.use(compression());
 // enable cors
 app.use(cors());
 // set security HTTP headers
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(xss());
 // file static
 app.use(

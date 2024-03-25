@@ -52,9 +52,17 @@ module.exports = {
       ".mp4",
     ],
     maxSize: 1024,
+    maxFilesAllow: 5,
   },
   fieldname: {
     avatar: "avatar",
-    postMedia: "post_media",
+    post_media: "post_media",
   },
+  post: {
+    type: {
+      new: "NEW",
+      reply: "REPLY",
+      quote: "QUOTE"
+    }
+  }
 };

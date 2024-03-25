@@ -56,11 +56,11 @@ model User {
 }
 
 model Follow {
-  createdAt  DateTime  @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  followById  String @map("follower_by_id")
-  followBy    User   @relation(name: "following", fields: [followById], references: [id], onDelete: Cascade)
-  followingId String @map("following_id")
-  following   User   @relation(name: "follower", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  followById  String   @map("follower_by_id")
+  followBy    User     @relation(name: "following", fields: [followById], references: [id], onDelete: Cascade)
+  followingId String   @map("following_id")
+  following   User     @relation(name: "follower", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@id([followById, followingId])
   @@map("follows")
@@ -87,26 +87,27 @@ model Post {
   id        String      @id @default(uuid())
   createdAt DateTime    @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
   updateAt  DateTime    @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
-  content   String      @db.VarChar(500)
+  content   String?     @db.VarChar(500)
   media     PostMedia[]
   type      PostType    @default(NEW)
   // author
   userId    String      @map("user_id")
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   replies   Post[]      @relation(name: "PostReplies")
-  // parent post
-  postId    String?     @map("post_id")
-  post      Post?       @relation(name: "PostReplies", fields: [postId], references: [id], onDelete: Cascade)
+  // post reference
+  postRefId String?     @map("post_ref_id")
+  postRef   Post?       @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: Cascade)
   likers    Reation[]
 
   @@map("posts")
 }
 
 model Reation {
-  postId String @map("post_id")
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([postId, userId])
   @@map("reactions")
