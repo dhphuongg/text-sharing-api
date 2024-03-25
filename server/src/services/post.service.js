@@ -27,8 +27,6 @@ const getById = async (id) => {
           username: true,
         },
       },
-      likers: { select: { userId: true } },
-      replies: { select: { id: true } },
       postRef: {
         select: {
           id: true,
@@ -46,7 +44,11 @@ const getById = async (id) => {
               username: true,
             },
           },
+          _count: { select: { likers: true, replies: true } },
         },
+      },
+      _count: {
+        select: { replies: true, likers: true },
       },
     },
   });
@@ -64,7 +66,6 @@ const getRepliesById = async (id, { limit, page, sortBy }) => {
             createdAt: true,
             content: true,
             media: { select: { id: true, mediaFileUrl: true } },
-            likers: { select: { userId: true } },
             user: {
               select: {
                 id: true,
@@ -73,7 +74,7 @@ const getRepliesById = async (id, { limit, page, sortBy }) => {
                 username: true,
               },
             },
-            replies: { select: { id: true } },
+            _count: { select: { likers: true, replies: true } },
           },
           take: limit,
           skip: (page - 1) * limit,
