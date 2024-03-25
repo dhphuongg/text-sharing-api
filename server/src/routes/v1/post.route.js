@@ -11,6 +11,11 @@ router
     validate(postValidation.getRepliesById),
     postController.getRepliesById
   )
+  .get(
+    "/user/:userId",
+    validate(postValidation.getByUserId),
+    postController.getByUserId
+  )
   .post(
     "/",
     postMediaUpload,

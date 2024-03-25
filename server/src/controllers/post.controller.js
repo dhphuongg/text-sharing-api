@@ -88,6 +88,21 @@ const getRepliesById = catchAsync(async (req, res, next) => {
   });
 });
 
+const getByUserId = catchAsync(async (req, res, next) => {
+  const { userId } = pick(req.params, ["userId"]);
+  const { limit, page } = getOptions(req.query);
+  const { posts, total } = await postService.getByUserId(userId, {
+    limit,
+    page,
+  });
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: { posts, limit, page, total },
+    error: null,
+  });
+});
+
 const editContentById = catchAsync(async (req, res, next) => {
   const { id } = pick(req.params, ["id"]);
   const { content } = pick(req.body, ["content"]);
@@ -118,6 +133,7 @@ module.exports = {
   createNewPost,
   getById,
   getRepliesById,
+  getByUserId,
   editContentById,
   deleteById,
 };

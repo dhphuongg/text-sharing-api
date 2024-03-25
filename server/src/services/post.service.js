@@ -48,9 +48,7 @@ const getById = async (id) => {
           _count: { select: { likers: true, replies: true } },
         },
       },
-      _count: {
-        select: { replies: true, likers: true },
-      },
+      _count: { select: { likers: true, replies: true } },
     },
   });
   return post;
@@ -98,6 +96,59 @@ const getRepliesById = async (id, { limit, page, sortBy }) => {
     }),
   ]);
   return { replies: replies.replies, total: total._count.replies };
+};
+
+const getByUserId = async (userId, { limit, page }) => {
+  const [posts, total] = await prisma.$transaction([
+    prisma.post.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        createdAt: true,
+        content: true,
+        type: true,
+        media: {
+          select: { mediaFileUrl: true },
+          orderBy: { id: "asc" },
+        },
+        user: {
+          select: {
+            id: true,
+            avatar: true,
+            fullName: true,
+            username: true,
+          },
+        },
+        postRef: {
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            type: true,
+            media: {
+              select: { mediaFileUrl: true },
+              orderBy: { id: "asc" },
+            },
+            user: {
+              select: {
+                id: true,
+                avatar: true,
+                fullName: true,
+                username: true,
+              },
+            },
+            _count: { select: { likers: true, replies: true } },
+          },
+        },
+        _count: { select: { likers: true, replies: true } },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.post.count({ where: { userId } }),
+  ]);
+  return { posts, total };
 };
 
 const editContentById = async (id, content) => {
@@ -160,6 +211,7 @@ module.exports = {
   createNewPost,
   getById,
   getRepliesById,
+  getByUserId,
   editContentById,
   deleteById,
 };
