@@ -16,8 +16,8 @@ const getById = async (id) => {
       content: true,
       type: true,
       media: {
-        select: { id: true, createdAt: true, mediaFileUrl: true },
-        orderBy: { createdAt: "desc" },
+        select: { mediaFileUrl: true },
+        orderBy: { id: "asc" },
       },
       user: {
         select: {
@@ -34,7 +34,8 @@ const getById = async (id) => {
           content: true,
           type: true,
           media: {
-            select: { id: true, mediaFileUrl: true },
+            select: { mediaFileUrl: true },
+            orderBy: { id: "asc" },
           },
           user: {
             select: {
@@ -65,7 +66,10 @@ const getRepliesById = async (id, { limit, page, sortBy }) => {
             id: true,
             createdAt: true,
             content: true,
-            media: { select: { id: true, mediaFileUrl: true } },
+            media: {
+              select: { mediaFileUrl: true },
+              orderBy: { id: "asc" },
+            },
             user: {
               select: {
                 id: true,
@@ -106,8 +110,8 @@ const editContentById = async (id, content) => {
       content: true,
       type: true,
       media: {
-        select: { id: true, createdAt: true, mediaFileUrl: true },
-        orderBy: { createdAt: "desc" },
+        select: { mediaFileUrl: true },
+        orderBy: { id: "asc" },
       },
       user: {
         select: {
@@ -117,8 +121,6 @@ const editContentById = async (id, content) => {
           username: true,
         },
       },
-      likers: { select: { userId: true } },
-      replies: { select: { id: true } },
       postRef: {
         select: {
           id: true,
@@ -126,7 +128,8 @@ const editContentById = async (id, content) => {
           content: true,
           type: true,
           media: {
-            select: { id: true, mediaFileUrl: true },
+            select: { mediaFileUrl: true },
+            orderBy: { id: "asc" },
           },
           user: {
             select: {
@@ -136,8 +139,10 @@ const editContentById = async (id, content) => {
               username: true,
             },
           },
+          _count: { select: { likers: true, replies: true } },
         },
       },
+      _count: { select: { likers: true, replies: true } },
     },
   });
   return post;

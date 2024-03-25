@@ -1,6 +1,5 @@
-const { validationConstant } = require("../../constants");
 const { postController } = require("../../controllers");
-const { validate, upload } = require("../../middlewares");
+const { validate, postMediaUpload } = require("../../middlewares");
 const { postValidation } = require("../../validations");
 
 const router = require("express").Router();
@@ -14,10 +13,7 @@ router
   )
   .post(
     "/",
-    upload.array(
-      validationConstant.fieldname.post_media,
-      validationConstant.post_media.maxFilesAllow
-    ),
+    postMediaUpload,
     validate(postValidation.createNewPost),
     postController.createNewPost
   )

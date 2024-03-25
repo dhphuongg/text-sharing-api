@@ -42,7 +42,7 @@ const createNewPost = catchAsync(async (req, res, next) => {
     const mediaFileUrls = req.files.map((file) =>
       file.path.replace(/\\/g, "/")
     );
-    await postMediaService.create(post.id, mediaFileUrls);
+    await postMediaService.createMany(post.id, mediaFileUrls);
   }
   const postRes = await postService.getById(post.id);
   res.status(httpStatus.CREATED).json({

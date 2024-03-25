@@ -1,10 +1,11 @@
 const prisma = require("../prisma-client");
 
-const create = async (postId, mediaFileUrls = []) => {
+const createMany = async (postId, mediaFileUrls = []) => {
   const postMedia = await prisma.postMedia.createMany({
     skipDuplicates: true,
     data: mediaFileUrls.map((url) => ({ postId, mediaFileUrl: url })),
   });
+  return postMedia;
 };
 
-module.exports = { create };
+module.exports = { createMany };

@@ -1,16 +1,15 @@
 const router = require("express").Router();
 
-const { validate, upload } = require("../../middlewares");
+const { validate, avtUpload } = require("../../middlewares");
 const { userValidation } = require("../../validations");
 const { userController } = require("../../controllers");
-const { validationConstant } = require("../../constants");
 
 router
   .get("/:id", validate(userValidation.getById), userController.getById)
   .get("/", userController.getProfile)
   .patch(
     "/",
-    upload.single(validationConstant.fieldname.avatar),
+    avtUpload,
     validate(userValidation.updateUser),
     userController.updateProfile
   )
