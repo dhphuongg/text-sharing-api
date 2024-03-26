@@ -110,7 +110,11 @@ const getByUserId = catchAsync(async (req, res, next) => {
 const editContentById = catchAsync(async (req, res, next) => {
   const { id } = pick(req.params, ["id"]);
   const { content } = pick(req.body, ["content"]);
-  const post = await postService.editContentById(id, content);
+  let post = await postService.getById(id);
+  if (post.user.id !== req.auth.id) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
+  }
+  post = await postService.editContentById(id, content);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
@@ -121,7 +125,11 @@ const editContentById = catchAsync(async (req, res, next) => {
 
 const deleteById = catchAsync(async (req, res, next) => {
   const { id } = pick(req.params, ["id"]);
-  const post = await postService.deleteById(id);
+  const post = await postService.getById(id);
+  if (post.user.id !== req.auth.id) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
+  }
+  await postService.deleteById(id);
   for (let i = 0; i < post.media.length; i++) {
     await destroyFileByPath(post.media[i].mediaFileUrl);
   }
