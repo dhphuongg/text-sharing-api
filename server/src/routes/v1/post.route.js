@@ -5,7 +5,7 @@ const { postValidation } = require("../../validations");
 const router = require("express").Router();
 
 router
-  .get("/liked", postController.getPostByLiker)
+  .get("/liked", postController.getMyLikedPosts)
   .get("/:postId", validate(postValidation.getById), postController.getById)
   .get(
     "/:postId/replies",
@@ -13,9 +13,9 @@ router
     postController.getRepliesById
   )
   .get(
-    "/user/:userId",
-    validate(postValidation.getByUserId),
-    postController.getByUserId
+    "/:postId/likers",
+    validate(postValidation.getById),
+    postController.getLikerByPostId
   )
   .post(
     "/",

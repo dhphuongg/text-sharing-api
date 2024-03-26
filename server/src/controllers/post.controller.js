@@ -176,10 +176,10 @@ const unlikePostById = catchAsync(async (req, res, next) => {
   });
 });
 
-const getPostByLiker = catchAsync(async (req, res, next) => {
+const getMyLikedPosts = catchAsync(async (req, res, next) => {
   const { limit, page } = getOptions(req.query);
   const userId = req.auth.id;
-  const { posts, total } = await postService.getPostsByLikerId(userId, {
+  const { posts, total } = await reactionService.getPostsByLikerId(userId, {
     limit,
     page,
   });
@@ -187,6 +187,24 @@ const getPostByLiker = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: { posts, limit, page, total },
+    error: null,
+  });
+});
+
+const getLikerByPostId = catchAsync(async (req, res, next) => {
+  const { postId } = pick(req.params, ["postId"]);
+  if (!(await postService.getById(postId))) {
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+  }
+  const { limit, page } = getOptions(req.query);
+  const { users, total } = await reactionService.getLikersByPostId(postId, {
+    limit,
+    page,
+  });
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: { users, limit, page, total },
     error: null,
   });
 });
@@ -200,5 +218,6 @@ module.exports = {
   deleteById,
   likePostById,
   unlikePostById,
-  getPostByLiker,
+  getMyLikedPosts,
+  getLikerByPostId,
 };

@@ -14,4 +14,85 @@ const deleteById = async (userId, postId) => {
   return reaction;
 };
 
-module.exports = { create, deleteById };
+const getPostsByLikerId = async (userId, { limit, page }) => {
+  const [reactions, total] = await prisma.$transaction([
+    prisma.reation.findMany({
+      where: { userId },
+      select: {
+        post: {
+          select: {
+            id: true,
+            createdAt: true,
+            content: true,
+            type: true,
+            media: {
+              select: { mediaFileUrl: true },
+              orderBy: { id: "asc" },
+            },
+            user: {
+              select: {
+                id: true,
+                avatar: true,
+                fullName: true,
+                username: true,
+              },
+            },
+            postRef: {
+              select: {
+                id: true,
+                createdAt: true,
+                content: true,
+                type: true,
+                media: {
+                  select: { mediaFileUrl: true },
+                  orderBy: { id: "asc" },
+                },
+                user: {
+                  select: {
+                    id: true,
+                    avatar: true,
+                    fullName: true,
+                    username: true,
+                  },
+                },
+                _count: { select: { likers: true, replies: true } },
+              },
+            },
+            _count: { select: { likers: true, replies: true } },
+          },
+        },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.reation.count({ where: { userId } }),
+  ]);
+  return { posts: reactions.map((r) => r.post), total };
+};
+
+const getLikersByPostId = async (postId, { limit, page }) => {
+  const [reactions, total] = await prisma.$transaction([
+    prisma.reation.findMany({
+      where: { postId },
+      select: {
+        user: {
+          select: {
+            id: true,
+            avatar: true,
+            fullName: true,
+            username: true,
+            _count: { select: { followers: true } },
+          },
+        },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.reation.count({ where: { postId } }),
+  ]);
+  return { users: reactions.map((r) => r.user), total };
+};
+
+module.exports = { create, deleteById, getPostsByLikerId, getLikersByPostId };

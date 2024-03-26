@@ -207,63 +207,6 @@ const deleteById = async (id) => {
   return post;
 };
 
-const getPostsByLikerId = async (userId, { limit, page }) => {
-  const [reactions, total] = await prisma.$transaction([
-    prisma.reation.findMany({
-      where: { userId },
-      select: {
-        post: {
-          select: {
-            id: true,
-            createdAt: true,
-            content: true,
-            type: true,
-            media: {
-              select: { mediaFileUrl: true },
-              orderBy: { id: "asc" },
-            },
-            user: {
-              select: {
-                id: true,
-                avatar: true,
-                fullName: true,
-                username: true,
-              },
-            },
-            postRef: {
-              select: {
-                id: true,
-                createdAt: true,
-                content: true,
-                type: true,
-                media: {
-                  select: { mediaFileUrl: true },
-                  orderBy: { id: "asc" },
-                },
-                user: {
-                  select: {
-                    id: true,
-                    avatar: true,
-                    fullName: true,
-                    username: true,
-                  },
-                },
-                _count: { select: { likers: true, replies: true } },
-              },
-            },
-            _count: { select: { likers: true, replies: true } },
-          },
-        },
-      },
-      take: limit,
-      skip: (page - 1) * limit,
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.post.count({ where: { likers: { some: { userId } } } }),
-  ]);
-  return { posts: reactions.map((r) => r.post), total };
-};
-
 module.exports = {
   createNewPost,
   getById,
@@ -271,5 +214,4 @@ module.exports = {
   getByUserId,
   editContentById,
   deleteById,
-  getPostsByLikerId,
 };

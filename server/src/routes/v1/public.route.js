@@ -5,12 +5,25 @@ const { userValidation, postValidation } = require("../../validations");
 const { userController, postController } = require("../../controllers");
 
 router
-  .get("/user/:userId", validate(userValidation.getById), userController.getById)
+  .get(
+    "/user/:userId",
+    validate(userValidation.getById),
+    userController.getById
+  )
   .get(
     "/user/:userId/post",
     validate(postValidation.getByUserId),
     postController.getByUserId
   )
-  .get("/post/:postId", validate(postValidation.getById), postController.getById);
+  .get(
+    "/post/:postId",
+    validate(postValidation.getById),
+    postController.getById
+  )
+  .get(
+    "/post/:postId/likers",
+    validate(postValidation.getById),
+    postController.getLikerByPostId
+  );
 
 module.exports = router;
