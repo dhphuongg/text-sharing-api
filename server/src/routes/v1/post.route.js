@@ -27,6 +27,16 @@ router
     validate(postValidation.editContentByID),
     postController.editContentById
   )
-  .delete("/:id", validate(postValidation.getById), postController.deleteById);
+  .delete("/:id", validate(postValidation.getById), postController.deleteById)
+  .post(
+    "/:postId/like",
+    validate(postValidation.likePost),
+    postController.likePostById
+  )
+  .delete(
+    "/:postId/like",
+    validate(postValidation.likePost),
+    postController.unlikePostById
+  );
 
 module.exports = router;

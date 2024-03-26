@@ -47,10 +47,17 @@ const editContentByID = {
   }),
 };
 
+const likePost = {
+  params: Joi.object({
+    postId: Joi.string().uuid().required(),
+  }).options({ stripUnknown: true }),
+};
+
 module.exports = {
   createNewPost,
   getById,
   getRepliesById,
   getByUserId,
   editContentByID,
+  likePost,
 };

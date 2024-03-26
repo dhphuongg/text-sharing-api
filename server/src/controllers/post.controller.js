@@ -1,6 +1,10 @@
 const httpStatus = require("http-status");
 
-const { postService, postMediaService } = require("../services");
+const {
+  postService,
+  postMediaService,
+  reactionService,
+} = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
 const { messageConstant, validationConstant } = require("../constants");
@@ -129,6 +133,34 @@ const deleteById = catchAsync(async (req, res, next) => {
   });
 });
 
+const likePostById = catchAsync(async (req, res, next) => {
+  const { postId } = pick(req.params, ["postId"]);
+  if (!(await postService.getById(postId))) {
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+  }
+  const reaction = await reactionService.create(req.auth.id, postId);
+  res.status(httpStatus.CREATED).json({
+    code: httpStatus.CREATED,
+    message: messageConstant.responseStatus.success,
+    data: reaction,
+    error: null,
+  });
+});
+
+const unlikePostById = catchAsync(async (req, res, next) => {
+  const { postId } = pick(req.params, ["postId"]);
+  if (!(await postService.getById(postId))) {
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+  }
+  const reaction = await reactionService.deleteById(req.auth.id, postId);
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: reaction,
+    error: null,
+  });
+});
+
 module.exports = {
   createNewPost,
   getById,
@@ -136,4 +168,6 @@ module.exports = {
   getByUserId,
   editContentById,
   deleteById,
+  likePostById,
+  unlikePostById,
 };

@@ -5,3 +5,4 @@ module.exports.otpService = require("./otp.service");
 module.exports.followService = require("./follow.service");
 module.exports.postService = require("./post.service");
 module.exports.postMediaService = require("./postMedia.service");
+module.exports.reactionService = require("./reaction.service");
