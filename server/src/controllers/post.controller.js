@@ -176,6 +176,21 @@ const unlikePostById = catchAsync(async (req, res, next) => {
   });
 });
 
+const getPostByLiker = catchAsync(async (req, res, next) => {
+  const { limit, page } = getOptions(req.query);
+  const userId = req.auth.id;
+  const { posts, total } = await postService.getPostsByLikerId(userId, {
+    limit,
+    page,
+  });
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: { posts, limit, page, total },
+    error: null,
+  });
+});
+
 module.exports = {
   createNewPost,
   getById,
@@ -185,4 +200,5 @@ module.exports = {
   deleteById,
   likePostById,
   unlikePostById,
+  getPostByLiker,
 };
