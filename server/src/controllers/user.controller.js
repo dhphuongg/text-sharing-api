@@ -116,27 +116,22 @@ const unfollow = catchAsync(async (req, res, next) => {
 
 const getFollowersById = catchAsync(async (req, res, next) => {
   const { userId } = pick(req.params, ["userId"]);
-  const { limit, page, sortBy } = getOptions(req.query);
-  const { followers, total } = await followService.getFollowersById(userId, {
+  const { limit, page } = getOptions(req.query);
+  const { users, total } = await followService.getFollowersById(userId, {
     limit,
     page,
-    sortBy,
   });
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: {
-      users: followers.map((follower) => ({
-        ...follower.followBy,
-        friendshipStatus: determineFriendshipStatus(
-          req.auth,
-          follower.followBy
-        ),
+      users: users.map((user) => ({
+        ...user,
+        friendshipStatus: determineFriendshipStatus(req.auth, user),
       })),
       limit,
       page,
       total,
-      sortBy,
     },
     error: null,
   });
@@ -144,27 +139,22 @@ const getFollowersById = catchAsync(async (req, res, next) => {
 
 const getFollowingById = catchAsync(async (req, res, next) => {
   const { userId } = pick(req.params, ["userId"]);
-  const { limit, page, sortBy } = getOptions(req.query);
-  const { following, total } = await followService.getFollowingById(userId, {
+  const { limit, page } = getOptions(req.query);
+  const { users, total } = await followService.getFollowingById(userId, {
     limit,
     page,
-    sortBy,
   });
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: {
-      users: following.map((follower) => ({
-        ...follower.following,
-        friendshipStatus: determineFriendshipStatus(
-          req.auth,
-          follower.following
-        ),
+      users: users.map((user) => ({
+        ...user,
+        friendshipStatus: determineFriendshipStatus(req.auth, user),
       })),
       limit,
       page,
       total,
-      sortBy,
     },
     error: null,
   });

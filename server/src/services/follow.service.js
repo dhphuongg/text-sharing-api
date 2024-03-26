@@ -37,12 +37,10 @@ const deleteById = async (followById, followingId) => {
   return follow;
 };
 
-const getFollowersById = async (id, { limit, page, sortBy }) => {
+const getFollowersById = async (id, { limit, page }) => {
   const [followers, total] = await prisma.$transaction([
     prisma.follow.findMany({
-      where: {
-        followingId: id,
-      },
+      where: { followingId: id },
       select: {
         followBy: {
           select: {
@@ -56,21 +54,17 @@ const getFollowersById = async (id, { limit, page, sortBy }) => {
       },
       take: limit,
       skip: (page - 1) * limit,
-      orderBy: {
-        [sortBy]: "desc",
-      },
+      orderBy: { createdAt: "desc" },
     }),
     prisma.follow.count({ where: { followingId: id } }),
   ]);
-  return { followers, total };
+  return { users: followers.map((f) => f.followBy), total };
 };
 
-const getFollowingById = async (id, { limit, page, sortBy }) => {
+const getFollowingById = async (id, { limit, page }) => {
   const [following, total] = await prisma.$transaction([
     prisma.follow.findMany({
-      where: {
-        followById: id,
-      },
+      where: { followById: id },
       select: {
         following: {
           select: {
@@ -84,13 +78,11 @@ const getFollowingById = async (id, { limit, page, sortBy }) => {
       },
       take: limit,
       skip: (page - 1) * limit,
-      orderBy: {
-        [sortBy]: "desc",
-      },
+      orderBy: { createdAt: "desc" },
     }),
     prisma.follow.count({ where: { followById: id } }),
   ]);
-  return { following, total };
+  return { users: following.map((f) => f.following), total };
 };
 
 module.exports = {

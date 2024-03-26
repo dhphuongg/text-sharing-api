@@ -11,6 +11,16 @@ router
     userController.getById
   )
   .get(
+    "/user/:userId/followers",
+    validate(userValidation.getById),
+    userController.getFollowersById
+  )
+  .get(
+    "/user/:userId/following",
+    validate(userValidation.getById),
+    userController.getFollowingById
+  )
+  .get(
     "/user/:userId/post",
     validate(postValidation.getByUserId),
     postController.getByUserId
