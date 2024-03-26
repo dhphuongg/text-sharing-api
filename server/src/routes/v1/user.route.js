@@ -23,13 +23,23 @@ router
     validate(userValidation.changePassword),
     userController.changePassword
   )
+  .post(
+    "/:userId/follow",
+    validate(userValidation.getById),
+    userController.follow
+  )
+  .delete(
+    "/:userId/follow",
+    validate(userValidation.getById),
+    userController.unfollow
+  )
   .get(
-    "/:postId/followers",
+    "/:userId/followers",
     validate(userValidation.getById),
     userController.getFollowersById
   )
   .get(
-    "/:postId/following",
+    "/:userId/following",
     validate(userValidation.getById),
     userController.getFollowingById
   );

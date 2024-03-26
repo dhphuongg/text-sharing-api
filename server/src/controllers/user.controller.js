@@ -74,10 +74,50 @@ const getProfile = catchAsync(async (req, res, next) => {
   });
 });
 
+const follow = catchAsync(async (req, res, next) => {
+  const { userId } = pick(req.params, ["userId"]);
+  if (req.auth.id === userId) {
+    return next(
+      new ApiError(httpStatus.BAD_REQUEST, messageConstant.follow.selfFollow)
+    );
+  } else if (await followService.getById(req.auth.id, userId)) {
+    return next(
+      new ApiError(httpStatus.BAD_REQUEST, messageConstant.already("Follow"))
+    );
+  }
+  const follow = await followService.createById(req.auth.id, userId);
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: follow,
+    error: null,
+  });
+});
+
+const unfollow = catchAsync(async (req, res, next) => {
+  const { userId } = pick(req.params, ["userId"]);
+  if (req.auth.id === userId) {
+    return next(
+      new ApiError(httpStatus.BAD_REQUEST, messageConstant.follow.selfUnfollow)
+    );
+  } else if (!(await followService.getById(req.auth.id, userId))) {
+    return next(
+      new ApiError(httpStatus.BAD_REQUEST, messageConstant.notFound("Follow"))
+    );
+  }
+  const follow = await followService.deleteById(req.auth.id, userId);
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: null,
+    error: null,
+  });
+});
+
 const getFollowersById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { userId } = pick(req.params, ["userId"]);
   const { limit, page, sortBy } = getOptions(req.query);
-  const { followers, total } = await followService.getFollowersById(postId, {
+  const { followers, total } = await followService.getFollowersById(userId, {
     limit,
     page,
     sortBy,
@@ -103,9 +143,9 @@ const getFollowersById = catchAsync(async (req, res, next) => {
 });
 
 const getFollowingById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { userId } = pick(req.params, ["userId"]);
   const { limit, page, sortBy } = getOptions(req.query);
-  const { following, total } = await followService.getFollowingById(postId, {
+  const { following, total } = await followService.getFollowingById(userId, {
     limit,
     page,
     sortBy,
@@ -135,6 +175,8 @@ module.exports = {
   getProfile,
   changePassword,
   updateProfile,
+  follow,
+  unfollow,
   getFollowersById,
   getFollowingById,
 };
