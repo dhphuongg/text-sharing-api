@@ -5,7 +5,7 @@ const { userValidation, postValidation } = require("../../validations");
 const { userController, postController } = require("../../controllers");
 
 router
-  .get("/:id", validate(userValidation.getById), userController.getById)
+  .get("/:userId", validate(userValidation.getById), userController.getById)
   .get(
     "/:userId/post",
     validate(postValidation.getByUserId),
@@ -24,12 +24,12 @@ router
     userController.changePassword
   )
   .get(
-    "/:id/followers",
+    "/:postId/followers",
     validate(userValidation.getById),
     userController.getFollowersById
   )
   .get(
-    "/:id/following",
+    "/:postId/following",
     validate(userValidation.getById),
     userController.getFollowingById
   );

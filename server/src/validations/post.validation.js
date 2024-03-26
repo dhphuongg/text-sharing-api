@@ -12,13 +12,13 @@ const createNewPost = {
 };
 
 const getById = {
-  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+  params: Joi.object({ postId: Joi.string().uuid().required() }).options({
     stripUnknown: true,
   }),
 };
 
 const getRepliesById = {
-  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+  params: Joi.object({ postId: Joi.string().uuid().required() }).options({
     stripUnknown: true,
   }),
   query: Joi.object({
@@ -42,7 +42,7 @@ const editContentByID = {
   body: Joi.object({
     content: Joi.string().max(500).required(),
   }).options({ stripUnknown: true }),
-  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+  params: Joi.object({ postId: Joi.string().uuid().required() }).options({
     stripUnknown: true,
   }),
 };

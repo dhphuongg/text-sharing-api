@@ -58,7 +58,8 @@ const createNewPost = catchAsync(async (req, res, next) => {
 });
 
 const getById = catchAsync(async (req, res, next) => {
-  const post = await postService.getById(req.params.id);
+  const { postId } = pick(req.params, ["postId"]);
+  const post = await postService.getById(postId);
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
   }
@@ -71,9 +72,9 @@ const getById = catchAsync(async (req, res, next) => {
 });
 
 const getRepliesById = catchAsync(async (req, res, next) => {
-  const { id } = pick(req.params, ["id"]);
+  const { postId } = pick(req.params, ["postId"]);
   const { limit, page, sortBy } = getOptions(req.query);
-  const { replies, total } = await postService.getRepliesById(id, {
+  const { replies, total } = await postService.getRepliesById(postId, {
     limit,
     page,
     sortBy,
@@ -108,13 +109,16 @@ const getByUserId = catchAsync(async (req, res, next) => {
 });
 
 const editContentById = catchAsync(async (req, res, next) => {
-  const { id } = pick(req.params, ["id"]);
+  const { postId } = pick(req.params, ["postId"]);
   const { content } = pick(req.body, ["content"]);
-  let post = await postService.getById(id);
+  let post = await postService.getById(postId);
+  if (!post) {
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+  }
   if (post.user.id !== req.auth.id) {
     throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
   }
-  post = await postService.editContentById(id, content);
+  post = await postService.editContentById(postId, content);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
@@ -124,12 +128,15 @@ const editContentById = catchAsync(async (req, res, next) => {
 });
 
 const deleteById = catchAsync(async (req, res, next) => {
-  const { id } = pick(req.params, ["id"]);
-  const post = await postService.getById(id);
+  const { postId } = pick(req.params, ["postId"]);
+  const post = await postService.getById(postId);
+  if (!post) {
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+  }
   if (post.user.id !== req.auth.id) {
     throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
   }
-  await postService.deleteById(id);
+  await postService.deleteById(postId);
   for (let i = 0; i < post.media.length; i++) {
     await destroyFileByPath(post.media[i].mediaFileUrl);
   }

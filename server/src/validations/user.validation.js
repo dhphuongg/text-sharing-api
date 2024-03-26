@@ -26,7 +26,7 @@ const updateUser = {
 };
 
 const getById = {
-  params: Joi.object({ id: Joi.string().uuid().required() }).options({
+  params: Joi.object({ userId: Joi.string().uuid().required() }).options({
     stripUnknown: true,
   }),
 };

@@ -46,8 +46,8 @@ const updateProfile = catchAsync(async (req, res, next) => {
 });
 
 const getById = catchAsync(async (req, res, next) => {
-  const { id } = pick(req.params, ["id"]);
-  const user = await userService.getById(id);
+  const { userId } = pick(req.params, ["userId"]);
+  const user = await userService.getById(userId);
   if (!user) {
     return next(
       new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("User"))
@@ -75,9 +75,9 @@ const getProfile = catchAsync(async (req, res, next) => {
 });
 
 const getFollowersById = catchAsync(async (req, res, next) => {
-  const { id } = pick(req.params, ["id"]);
+  const { postId } = pick(req.params, ["postId"]);
   const { limit, page, sortBy } = getOptions(req.query);
-  const { followers, total } = await followService.getFollowersById(id, {
+  const { followers, total } = await followService.getFollowersById(postId, {
     limit,
     page,
     sortBy,
@@ -103,9 +103,9 @@ const getFollowersById = catchAsync(async (req, res, next) => {
 });
 
 const getFollowingById = catchAsync(async (req, res, next) => {
-  const { id } = pick(req.params, ["id"]);
+  const { postId } = pick(req.params, ["postId"]);
   const { limit, page, sortBy } = getOptions(req.query);
-  const { following, total } = await followService.getFollowingById(id, {
+  const { following, total } = await followService.getFollowingById(postId, {
     limit,
     page,
     sortBy,

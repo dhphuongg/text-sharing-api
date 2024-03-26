@@ -5,9 +5,9 @@ const { postValidation } = require("../../validations");
 const router = require("express").Router();
 
 router
-  .get("/:id", validate(postValidation.getById), postController.getById)
+  .get("/:postId", validate(postValidation.getById), postController.getById)
   .get(
-    "/:id/replies",
+    "/:postId/replies",
     validate(postValidation.getRepliesById),
     postController.getRepliesById
   )
@@ -23,11 +23,15 @@ router
     postController.createNewPost
   )
   .patch(
-    "/:id",
+    "/:postId",
     validate(postValidation.editContentByID),
     postController.editContentById
   )
-  .delete("/:id", validate(postValidation.getById), postController.deleteById)
+  .delete(
+    "/:postId",
+    validate(postValidation.getById),
+    postController.deleteById
+  )
   .post(
     "/:postId/like",
     validate(postValidation.likePost),
