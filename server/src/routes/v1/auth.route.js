@@ -6,7 +6,7 @@ const { authController } = require("../../controllers");
 
 router
   .post("/login", validate(authValidation.login), authController.login)
-  .post("/send-otp", validate(authValidation.sendOtp), authController.sendOtp)
+  .get("/send-otp", validate(authValidation.sendOtp), authController.sendOtp)
   .post("/register", validate(authValidation.register), authController.register)
   .post(
     "/reset-password",

@@ -51,20 +51,15 @@ const register = {
 };
 
 const sendOtp = {
-  body: Joi.object()
-    .keys({
-      email: Joi.string()
-        .email()
-        .required()
-        .label(validationConstant.label.user.email),
-    })
-    .options({ stripUnknown: true }),
-  query: Joi.object()
-    .keys({
-      job: Joi.string()
-        .valid(...Object.values(validationConstant.otp.job))
-        .required(),
-    })
+  query: Joi.object({
+    job: Joi.string()
+      .valid(...Object.values(validationConstant.otp.job))
+      .required(),
+    email: Joi.string()
+      .email()
+      .required()
+      .label(validationConstant.label.user.email),
+  })
     .options({ stripUnknown: true }),
 };
 

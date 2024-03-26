@@ -37,8 +37,7 @@ const register = catchAsync(async (req, res, next) => {
 });
 
 const sendOtp = catchAsync(async (req, res, next) => {
-  const { email } = pick(req.body, ["email"]);
-  const { job } = pick(req.query, ["job"]);
+  const { job, email } = pick(req.query, ["job", "email"]);
   const otp = await authService.sendOtp(email, job);
   const data =
     job === constants.validation.otp.job.register
