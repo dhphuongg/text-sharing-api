@@ -21,7 +21,7 @@ const authorize = (roles = [constants.role.user]) =>
     }
 
     const decoded = jwt.verifyToken(token, config.jwt.secret);
-    const user = await userService.getById(decoded.sub);
+    const user = await userService.getFullById(decoded.sub);
     if (!user)
       return next(
         new ApiError(httpStatus.UNAUTHORIZED, messageConstant.token.invalid)

@@ -11,12 +11,23 @@ const create = async ({ fullName, email, username, password }) => {
   return user;
 };
 
+const getFullById = async (id) => {
+  return await prisma.user.findUnique({ where: { id } });
+};
+
 const getById = async (id) => {
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { followers: true },
+    select: {
+      id: true,
+      avatar: true,
+      fullName: true,
+      username: true,
+      birthday: true,
+      bio: true,
+      _count: { select: { followers: true } },
+    },
   });
-  user && delete user.password;
   return user;
 };
 
@@ -41,6 +52,7 @@ const updateById = async (id, data) => {
 
 module.exports = {
   create,
+  getFullById,
   getById,
   getByEmail,
   updatePasswordById,

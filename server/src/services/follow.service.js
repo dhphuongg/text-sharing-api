@@ -15,6 +15,33 @@ const getById = async (followById, followingId) => {
   return follow;
 };
 
+const getFriendshipStatus = async (sourceUserId, targetUserId) => {
+  let friendshipStatus = null;
+  if (sourceUserId) {
+    if (sourceUserId !== targetUserId) {
+      friendshipStatus = {
+        followBy: !!(await prisma.follow.findUnique({
+          where: {
+            followById_followingId: {
+              followById: targetUserId,
+              followingId: sourceUserId,
+            },
+          },
+        })),
+        following: !!(await prisma.follow.findUnique({
+          where: {
+            followById_followingId: {
+              followById: sourceUserId,
+              followingId: targetUserId,
+            },
+          },
+        })),
+      };
+    }
+  }
+  return friendshipStatus;
+};
+
 const createById = async (followById, followingId) => {
   const follow = await prisma.follow.create({
     data: { followById, followingId },
@@ -48,7 +75,7 @@ const getFollowersById = async (id, { limit, page }) => {
             username: true,
             fullName: true,
             avatar: true,
-            followers: true,
+            _count: { select: { followers: true } },
           },
         },
       },
@@ -72,7 +99,7 @@ const getFollowingById = async (id, { limit, page }) => {
             username: true,
             fullName: true,
             avatar: true,
-            followers: true,
+            _count: { select: { followers: true } },
           },
         },
       },
@@ -87,6 +114,7 @@ const getFollowingById = async (id, { limit, page }) => {
 
 module.exports = {
   getById,
+  getFriendshipStatus,
   createById,
   deleteById,
   getFollowersById,

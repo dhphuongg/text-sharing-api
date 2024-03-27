@@ -1,12 +1,15 @@
-function determineFriendshipStatus(source, target) {
-  let friendshipStatus = null;
-  if (source && source.id !== target.id) {
-    friendshipStatus = {
-      followedBy: source.followers.some((f) => f.followById === target.id),
-      following: target.followers.some((f) => f.followById === source.id),
-    };
+const { followService } = require("../services");
+
+async function addFriendshipStatusForPostAuthor(reqAuthId, post) {
+  post.user.friendshipStatus = await followService.getFriendshipStatus(
+    reqAuthId,
+    post.user.id
+  );
+  if (post.postRef) {
+    post.postRef.user.friendshipStatus =
+      await followService.getFriendshipStatus(reqAuthId, post.postRef.user.id);
   }
-  return friendshipStatus;
+  return post;
 }
 
-module.exports = { determineFriendshipStatus };
+module.exports = { addFriendshipStatusForPostAuthor };

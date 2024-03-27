@@ -4,6 +4,7 @@ const {
   postService,
   postMediaService,
   reactionService,
+  followService,
 } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
@@ -11,6 +12,9 @@ const { messageConstant, validationConstant } = require("../constants");
 const ApiError = require("../utils/ApiError");
 const destroyFileByPath = require("../utils/destroyFile");
 const { getOptions } = require("../utils/getPaginationAndSort");
+const {
+  addFriendshipStatusForPostAuthor,
+} = require("../utils/friendshipStatus");
 
 const createNewPost = catchAsync(async (req, res, next) => {
   const { content, type, postRefId } = pick(req.body, [
@@ -63,6 +67,7 @@ const getById = catchAsync(async (req, res, next) => {
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
   }
+  await addFriendshipStatusForPostAuthor(req.auth.id, post);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
@@ -79,11 +84,14 @@ const getRepliesById = catchAsync(async (req, res, next) => {
     page,
     sortBy,
   });
+  for (let i = 0; i < replies.length; i++) {
+    await addFriendshipStatusForPostAuthor(req.auth.id, replies[i]);
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: {
-      replies: replies,
+      replies,
       limit,
       page,
       sortBy,
@@ -100,6 +108,9 @@ const getByUserId = catchAsync(async (req, res, next) => {
     limit,
     page,
   });
+  for (let i = 0; i < posts.length; i++) {
+    await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
@@ -183,6 +194,9 @@ const getMyLikedPosts = catchAsync(async (req, res, next) => {
     limit,
     page,
   });
+  for (let i = 0; i < posts.length; i++) {
+    await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
@@ -201,6 +215,12 @@ const getLikerByPostId = catchAsync(async (req, res, next) => {
     limit,
     page,
   });
+  for (let i = 0; i < users.length; i++) {
+    users[i].friendshipStatus = await followService.getFriendshipStatus(
+      req.auth.id,
+      users[i].id
+    );
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,

@@ -5,7 +5,6 @@ const { userService, followService } = require("../services");
 const catchAsync = require("../utils/catchAsync");
 const pick = require("../utils/pick");
 const { getOptions } = require("../utils/getPaginationAndSort");
-const { determineFriendshipStatus } = require("../utils/friendshipStatus");
 const destroyFileByPath = require("../utils/destroyFile");
 const ApiError = require("../utils/ApiError");
 const { messageConstant } = require("../constants");
@@ -53,13 +52,14 @@ const getById = catchAsync(async (req, res, next) => {
       new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("User"))
     );
   }
+  user.friendshipStatus = await followService.getFriendshipStatus(
+    req.auth.id,
+    user.id
+  );
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: {
-      ...user,
-      friendshipStatus: determineFriendshipStatus(req.auth, user),
-    },
+    data: user,
     error: null,
   });
 });
@@ -121,18 +121,17 @@ const getFollowersById = catchAsync(async (req, res, next) => {
     limit,
     page,
   });
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    user.friendshipStatus = await followService.getFriendshipStatus(
+      req.auth.id,
+      user.id
+    );
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: {
-      users: users.map((user) => ({
-        ...user,
-        friendshipStatus: determineFriendshipStatus(req.auth, user),
-      })),
-      limit,
-      page,
-      total,
-    },
+    data: { users, limit, page, total },
     error: null,
   });
 });
@@ -144,18 +143,17 @@ const getFollowingById = catchAsync(async (req, res, next) => {
     limit,
     page,
   });
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    user.friendshipStatus = await followService.getFriendshipStatus(
+      req.auth.id,
+      user.id
+    );
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: {
-      users: users.map((user) => ({
-        ...user,
-        friendshipStatus: determineFriendshipStatus(req.auth, user),
-      })),
-      limit,
-      page,
-      total,
-    },
+    data: { users, limit, page, total },
     error: null,
   });
 });
