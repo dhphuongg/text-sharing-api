@@ -21,7 +21,11 @@ const login = async ({ email, password }) => {
   }
   const accessToken = jwt.generateToken(user.id, constants.tokenType.access);
   const refreshToken = jwt.generateToken(user.id, constants.tokenType.refresh);
-  return { user, accessToken, refreshToken };
+  return {
+    user: await userService.getById(user.id),
+    accessToken,
+    refreshToken,
+  };
 };
 
 const register = async ({ fullName, email, username, password }) => {

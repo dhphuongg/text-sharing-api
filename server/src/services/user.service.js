@@ -6,8 +6,16 @@ const { constants } = require("../constants");
 const create = async ({ fullName, email, username, password }) => {
   const user = await prisma.user.create({
     data: { fullName, email, username, password },
+    select: {
+      id: true,
+      avatar: true,
+      fullName: true,
+      username: true,
+      birthday: true,
+      bio: true,
+      _count: { select: { followers: true } },
+    },
   });
-  user && delete user.password;
   return user;
 };
 
@@ -38,15 +46,37 @@ const getByEmail = async (email) => {
 
 const updatePasswordById = async (id, password) => {
   password = bcrypt.hashSync(password, constants.bcryptSalt);
-  const user = await prisma.user.update({ where: { id }, data: { password } });
-  user && delete user.password;
+  const user = await prisma.user.update({
+    where: { id },
+    data: { password },
+    select: {
+      id: true,
+      avatar: true,
+      fullName: true,
+      username: true,
+      birthday: true,
+      bio: true,
+      _count: { select: { followers: true } },
+    },
+  });
   return user;
 };
 
 const updateById = async (id, data) => {
   if (data.birthday) data.birthday = new Date(data.birthday);
-  const user = await prisma.user.update({ where: { id }, data });
-  user && delete user.password;
+  const user = await prisma.user.update({
+    where: { id },
+    data,
+    select: {
+      id: true,
+      avatar: true,
+      fullName: true,
+      username: true,
+      birthday: true,
+      bio: true,
+      _count: { select: { followers: true } },
+    },
+  });
   return user;
 };
 
