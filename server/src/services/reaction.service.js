@@ -25,16 +25,14 @@ const getPostsByLikerId = async (userId, { limit, page }) => {
             createdAt: true,
             content: true,
             type: true,
-            media: {
-              select: { mediaFileUrl: true },
-              orderBy: { id: "asc" },
-            },
+            media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
             user: {
               select: {
                 id: true,
                 avatar: true,
                 fullName: true,
                 username: true,
+                _count: { select: { followers: true } },
               },
             },
             postRef: {
@@ -53,6 +51,7 @@ const getPostsByLikerId = async (userId, { limit, page }) => {
                     avatar: true,
                     fullName: true,
                     username: true,
+                    _count: { select: { followers: true } },
                   },
                 },
                 _count: { select: { likers: true, replies: true } },
