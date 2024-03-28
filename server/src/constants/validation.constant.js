@@ -58,6 +58,7 @@ module.exports = {
     follow: 'FOLLOW',
     likePost: 'LIKE_POST',
     likeReply: 'LIKE_REPLY',
+    new: 'NEW',
     reply: 'REPLY',
     quote: 'QUOTE'
   }

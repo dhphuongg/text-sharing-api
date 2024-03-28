@@ -52,6 +52,7 @@ module.exports = {
     [validationConstant.event.follow]: 'started following you.',
     [validationConstant.event.likePost]: 'liked your post.',
     [validationConstant.event.likeReply]: 'liked your reply.',
+    [validationConstant.event.new]: 'created new post.',
     [validationConstant.event.reply]: 'reply your post.',
     [validationConstant.event.quote]: 'quote your post.'
   },

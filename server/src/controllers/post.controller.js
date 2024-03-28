@@ -17,7 +17,7 @@ const { addFriendshipStatusForPostAuthor } = require('../utils/friendshipStatus'
 
 const createNewPost = catchAsync(async (req, res, next) => {
   const { content, type, postRefId } = pick(req.body, ['content', 'type', 'postRefId']);
-
+  const myId = req.auth.id;
   if (!content && !req.files) {
     throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.required('Content or Media'));
   }
@@ -26,9 +26,21 @@ const createNewPost = catchAsync(async (req, res, next) => {
     if (!postRefId) {
       throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.required('Post reference id'));
     }
-    post = await postService.createNewPost(req.auth.id, content, type, postRefId);
+    post = await postService.createNewPost(myId, content, type, postRefId);
+    // Create notification
+    await notificationService.createNotification(
+      myId,
+      post.postRef.userId,
+      post.type,
+      post.postRefId
+    );
   } else {
-    post = await postService.createNewPost(req.auth.id, content);
+    post = await postService.createNewPost(myId, content);
+    // Create notification
+    const followers = await followService.getAllFollowersById(myId);
+    for (let i = 0; i < followers.length; i++) {
+      await notificationService.createNotification(myId, followers[i].id, post.type, post.id);
+    }
   }
   if (req.files) {
     const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));

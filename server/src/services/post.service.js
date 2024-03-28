@@ -2,7 +2,8 @@ const prisma = require('../prisma-client');
 
 const createNewPost = async (userId, content, type, postRefId) => {
   const post = await prisma.post.create({
-    data: { userId, content, postRefId, type }
+    data: { userId, content, postRefId, type },
+    include: { postRef: true }
   });
   return post;
 };

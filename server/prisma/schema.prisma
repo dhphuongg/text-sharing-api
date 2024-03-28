@@ -123,6 +123,7 @@ enum Event {
   FOLLOW
   LIKE_POST
   LIKE_REPLY
+  NEW
   REPLY
   QUOTE
 }

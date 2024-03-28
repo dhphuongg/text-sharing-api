@@ -88,6 +88,24 @@ const getFollowersById = async (id, { limit, page }) => {
   return { users: followers.map((f) => f.followBy), total };
 };
 
+const getAllFollowersById = async (id) => {
+  const followers = await prisma.follow.findMany({
+    where: { followingId: id },
+    select: {
+      followBy: {
+        select: {
+          id: true,
+          username: true,
+          fullName: true,
+          avatar: true,
+          _count: { select: { followers: true } }
+        }
+      }
+    }
+  });
+  return followers.map((f) => f.followBy);
+};
+
 const getFollowingById = async (id, { limit, page }) => {
   const [following, total] = await prisma.$transaction([
     prisma.follow.findMany({
@@ -118,5 +136,6 @@ module.exports = {
   createById,
   deleteById,
   getFollowersById,
+  getAllFollowersById,
   getFollowingById
 };
