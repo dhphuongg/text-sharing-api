@@ -1,6 +1,12 @@
 const httpStatus = require('http-status');
 
-const { postService, postMediaService, reactionService, followService } = require('../services');
+const {
+  postService,
+  postMediaService,
+  reactionService,
+  followService,
+  notificationService
+} = require('../services');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
 const { messageConstant, validationConstant } = require('../constants');
@@ -28,11 +34,10 @@ const createNewPost = catchAsync(async (req, res, next) => {
     const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));
     await postMediaService.createMany(post.id, mediaFileUrls);
   }
-  const postRes = await postService.getById(post.id);
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
     message: messageConstant.responseStatus.success,
-    data: postRes,
+    data: await postService.getById(post.id),
     error: null
   });
 });
@@ -141,10 +146,20 @@ const likePostById = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   const reaction = await reactionService.create(req.auth.id, postId);
+  let event = validationConstant.event.likePost;
+  if (reaction.post.type === validationConstant.post.type.reply) {
+    event = validationConstant.event.likeReply;
+  }
+  await notificationService.createNotification(
+    req.auth.id,
+    reaction.post.userId,
+    event,
+    reaction.post.id
+  );
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
     message: messageConstant.responseStatus.success,
-    data: reaction,
+    data: null,
     error: null
   });
 });
@@ -158,7 +173,7 @@ const unlikePostById = catchAsync(async (req, res, next) => {
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
-    data: reaction,
+    data: null,
     error: null
   });
 });

@@ -2,7 +2,12 @@ const prisma = require('../prisma-client');
 
 const create = async (userId, postId) => {
   const reaction = await prisma.reation.create({
-    data: { userId, postId }
+    data: { userId, postId },
+    select: {
+      createdAt: true,
+      post: true,
+      userId: true
+    }
   });
   return reaction;
 };
