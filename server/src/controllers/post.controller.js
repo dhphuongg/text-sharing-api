@@ -1,55 +1,31 @@
-const httpStatus = require("http-status");
+const httpStatus = require('http-status');
 
-const {
-  postService,
-  postMediaService,
-  reactionService,
-  followService,
-} = require("../services");
-const catchAsync = require("../utils/catchAsync");
-const pick = require("../utils/pick");
-const { messageConstant, validationConstant } = require("../constants");
-const ApiError = require("../utils/ApiError");
-const destroyFileByPath = require("../utils/destroyFile");
-const { getOptions } = require("../utils/getPaginationAndSort");
-const {
-  addFriendshipStatusForPostAuthor,
-} = require("../utils/friendshipStatus");
+const { postService, postMediaService, reactionService, followService } = require('../services');
+const catchAsync = require('../utils/catchAsync');
+const pick = require('../utils/pick');
+const { messageConstant, validationConstant } = require('../constants');
+const ApiError = require('../utils/ApiError');
+const destroyFileByPath = require('../utils/destroyFile');
+const { getOptions } = require('../utils/getPaginationAndSort');
+const { addFriendshipStatusForPostAuthor } = require('../utils/friendshipStatus');
 
 const createNewPost = catchAsync(async (req, res, next) => {
-  const { content, type, postRefId } = pick(req.body, [
-    "content",
-    "type",
-    "postRefId",
-  ]);
+  const { content, type, postRefId } = pick(req.body, ['content', 'type', 'postRefId']);
 
   if (!content && !req.files) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      messageConstant.required("Content or Media")
-    );
+    throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.required('Content or Media'));
   }
   let post;
   if (type && type !== validationConstant.post.type.new) {
     if (!postRefId) {
-      throw new ApiError(
-        httpStatus.BAD_REQUEST,
-        messageConstant.required("Post reference id")
-      );
+      throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.required('Post reference id'));
     }
-    post = await postService.createNewPost(
-      req.auth.id,
-      content,
-      type,
-      postRefId
-    );
+    post = await postService.createNewPost(req.auth.id, content, type, postRefId);
   } else {
     post = await postService.createNewPost(req.auth.id, content);
   }
   if (req.files) {
-    const mediaFileUrls = req.files.map((file) =>
-      file.path.replace(/\\/g, "/")
-    );
+    const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));
     await postMediaService.createMany(post.id, mediaFileUrls);
   }
   const postRes = await postService.getById(post.id);
@@ -57,32 +33,32 @@ const createNewPost = catchAsync(async (req, res, next) => {
     code: httpStatus.CREATED,
     message: messageConstant.responseStatus.success,
     data: postRes,
-    error: null,
+    error: null
   });
 });
 
 const getById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { postId } = pick(req.params, ['postId']);
   const post = await postService.getById(postId);
   if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   await addFriendshipStatusForPostAuthor(req.auth.id, post);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: post,
-    error: null,
+    error: null
   });
 });
 
 const getRepliesById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { postId } = pick(req.params, ['postId']);
   const { limit, page, sortBy } = getOptions(req.query);
   const { replies, total } = await postService.getRepliesById(postId, {
     limit,
     page,
-    sortBy,
+    sortBy
   });
   for (let i = 0; i < replies.length; i++) {
     await addFriendshipStatusForPostAuthor(req.auth.id, replies[i]);
@@ -95,18 +71,18 @@ const getRepliesById = catchAsync(async (req, res, next) => {
       limit,
       page,
       sortBy,
-      total,
+      total
     },
-    error: null,
+    error: null
   });
 });
 
 const getByUserId = catchAsync(async (req, res, next) => {
-  const { userId } = pick(req.params, ["userId"]);
+  const { userId } = pick(req.params, ['userId']);
   const { limit, page } = getOptions(req.query);
   const { posts, total } = await postService.getByUserId(userId, {
     limit,
-    page,
+    page
   });
   for (let i = 0; i < posts.length; i++) {
     await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
@@ -115,16 +91,16 @@ const getByUserId = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: { posts, limit, page, total },
-    error: null,
+    error: null
   });
 });
 
 const editContentById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
-  const { content } = pick(req.body, ["content"]);
+  const { postId } = pick(req.params, ['postId']);
+  const { content } = pick(req.body, ['content']);
   let post = await postService.getById(postId);
   if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   if (post.user.id !== req.auth.id) {
     throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
@@ -134,15 +110,15 @@ const editContentById = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: post,
-    error: null,
+    error: null
   });
 });
 
 const deleteById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { postId } = pick(req.params, ['postId']);
   const post = await postService.getById(postId);
   if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   if (post.user.id !== req.auth.id) {
     throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
@@ -155,35 +131,35 @@ const deleteById = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: null,
-    error: null,
+    error: null
   });
 });
 
 const likePostById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { postId } = pick(req.params, ['postId']);
   if (!(await postService.getById(postId))) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   const reaction = await reactionService.create(req.auth.id, postId);
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
     message: messageConstant.responseStatus.success,
     data: reaction,
-    error: null,
+    error: null
   });
 });
 
 const unlikePostById = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { postId } = pick(req.params, ['postId']);
   if (!(await postService.getById(postId))) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   const reaction = await reactionService.deleteById(req.auth.id, postId);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: reaction,
-    error: null,
+    error: null
   });
 });
 
@@ -192,7 +168,7 @@ const getMyLikedPosts = catchAsync(async (req, res, next) => {
   const userId = req.auth.id;
   const { posts, total } = await reactionService.getPostsByLikerId(userId, {
     limit,
-    page,
+    page
   });
   for (let i = 0; i < posts.length; i++) {
     await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
@@ -201,31 +177,28 @@ const getMyLikedPosts = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: { posts, limit, page, total },
-    error: null,
+    error: null
   });
 });
 
 const getLikerByPostId = catchAsync(async (req, res, next) => {
-  const { postId } = pick(req.params, ["postId"]);
+  const { postId } = pick(req.params, ['postId']);
   if (!(await postService.getById(postId))) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound("Post"));
+    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
   }
   const { limit, page } = getOptions(req.query);
   const { users, total } = await reactionService.getLikersByPostId(postId, {
     limit,
-    page,
+    page
   });
   for (let i = 0; i < users.length; i++) {
-    users[i].friendshipStatus = await followService.getFriendshipStatus(
-      req.auth.id,
-      users[i].id
-    );
+    users[i].friendshipStatus = await followService.getFriendshipStatus(req.auth.id, users[i].id);
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: { users, limit, page, total },
-    error: null,
+    error: null
   });
 });
 
@@ -234,7 +207,7 @@ const searchByContent = catchAsync(async (req, res, next) => {
   const { posts, total } = await postService.searchByContent({
     limit,
     page,
-    keyword,
+    keyword
   });
   for (let i = 0; i < posts.length; i++) {
     await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
@@ -243,7 +216,7 @@ const searchByContent = catchAsync(async (req, res, next) => {
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
     data: { posts, limit, page, total, keyword },
-    error: null,
+    error: null
   });
 });
 
@@ -258,5 +231,5 @@ module.exports = {
   unlikePostById,
   getMyLikedPosts,
   getLikerByPostId,
-  searchByContent,
+  searchByContent
 };

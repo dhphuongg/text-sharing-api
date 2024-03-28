@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-const config = require("../config/config");
-const { constants } = require("../constants");
+const config = require('../config/config');
+const { constants } = require('../constants');
 
 const generateToken = (sub, type) => {
   const exp =

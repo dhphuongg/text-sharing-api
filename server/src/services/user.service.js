@@ -1,7 +1,7 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 
-const prisma = require("../prisma-client");
-const { constants } = require("../constants");
+const prisma = require('../prisma-client');
+const { constants } = require('../constants');
 
 const create = async ({ fullName, email, username, password }) => {
   const user = await prisma.user.create({
@@ -13,8 +13,8 @@ const create = async ({ fullName, email, username, password }) => {
       username: true,
       birthday: true,
       bio: true,
-      _count: { select: { followers: true } },
-    },
+      _count: { select: { followers: true } }
+    }
   });
   return user;
 };
@@ -33,8 +33,8 @@ const getById = async (id) => {
       username: true,
       birthday: true,
       bio: true,
-      _count: { select: { followers: true } },
-    },
+      _count: { select: { followers: true } }
+    }
   });
   return user;
 };
@@ -56,8 +56,8 @@ const updatePasswordById = async (id, password) => {
       username: true,
       birthday: true,
       bio: true,
-      _count: { select: { followers: true } },
-    },
+      _count: { select: { followers: true } }
+    }
   });
   return user;
 };
@@ -74,8 +74,8 @@ const updateById = async (id, data) => {
       username: true,
       birthday: true,
       bio: true,
-      _count: { select: { followers: true } },
-    },
+      _count: { select: { followers: true } }
+    }
   });
   return user;
 };
@@ -88,8 +88,8 @@ const search = async ({ keyword, limit, page }) => {
           { username: { search: keyword } },
           { username: { contains: keyword } },
           { fullName: { search: keyword } },
-          { fullName: { contains: keyword } },
-        ],
+          { fullName: { contains: keyword } }
+        ]
       },
       select: {
         id: true,
@@ -98,10 +98,10 @@ const search = async ({ keyword, limit, page }) => {
         username: true,
         birthday: true,
         bio: true,
-        _count: { select: { followers: true } },
+        _count: { select: { followers: true } }
       },
       take: limit,
-      skip: (page - 1) * limit,
+      skip: (page - 1) * limit
     }),
     prisma.user.count({
       where: {
@@ -109,10 +109,10 @@ const search = async ({ keyword, limit, page }) => {
           { username: { search: keyword } },
           { username: { contains: keyword } },
           { fullName: { search: keyword } },
-          { fullName: { contains: keyword } },
-        ],
-      },
-    }),
+          { fullName: { contains: keyword } }
+        ]
+      }
+    })
   ]);
   return { users, total };
 };
@@ -124,5 +124,5 @@ module.exports = {
   getByEmail,
   updatePasswordById,
   updateById,
-  search,
+  search
 };

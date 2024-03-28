@@ -1,8 +1,8 @@
-const prisma = require("../prisma-client");
+const prisma = require('../prisma-client');
 
 const createNewPost = async (userId, content, type, postRefId) => {
   const post = await prisma.post.create({
-    data: { userId, content, postRefId, type },
+    data: { userId, content, postRefId, type }
   });
   return post;
 };
@@ -15,15 +15,15 @@ const getById = async (id) => {
       createdAt: true,
       content: true,
       type: true,
-      media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+      media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
       user: {
         select: {
           id: true,
           avatar: true,
           fullName: true,
           username: true,
-          _count: { select: { followers: true } },
-        },
+          _count: { select: { followers: true } }
+        }
       },
       postRef: {
         select: {
@@ -31,21 +31,21 @@ const getById = async (id) => {
           createdAt: true,
           content: true,
           type: true,
-          media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+          media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
           user: {
             select: {
               id: true,
               avatar: true,
               fullName: true,
               username: true,
-              _count: { select: { followers: true } },
-            },
+              _count: { select: { followers: true } }
+            }
           },
-          _count: { select: { likers: true, replies: true } },
-        },
+          _count: { select: { likers: true, replies: true } }
+        }
       },
-      _count: { select: { likers: true, replies: true } },
-    },
+      _count: { select: { likers: true, replies: true } }
+    }
   });
   return post;
 };
@@ -53,28 +53,28 @@ const getById = async (id) => {
 const getRepliesById = async (id, { limit, page, sortBy }) => {
   const [replies, total] = await prisma.$transaction([
     prisma.post.findMany({
-      where: { type: "REPLY", postRefId: id },
+      where: { type: 'REPLY', postRefId: id },
       select: {
         id: true,
         createdAt: true,
         content: true,
-        media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+        media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
         user: {
           select: {
             id: true,
             avatar: true,
             fullName: true,
             username: true,
-            _count: { select: { followers: true } },
-          },
+            _count: { select: { followers: true } }
+          }
         },
-        _count: { select: { likers: true, replies: true } },
+        _count: { select: { likers: true, replies: true } }
       },
       take: limit,
       skip: (page - 1) * limit,
-      orderBy: [{ likers: { _count: "desc" } }, { [sortBy]: "desc" }],
+      orderBy: [{ likers: { _count: 'desc' } }, { [sortBy]: 'desc' }]
     }),
-    prisma.post.count({ where: { type: "REPLY", postRefId: id } }),
+    prisma.post.count({ where: { type: 'REPLY', postRefId: id } })
   ]);
   return { replies, total };
 };
@@ -88,15 +88,15 @@ const getByUserId = async (userId, { limit, page }) => {
         createdAt: true,
         content: true,
         type: true,
-        media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+        media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
         user: {
           select: {
             id: true,
             avatar: true,
             fullName: true,
             username: true,
-            _count: { select: { followers: true } },
-          },
+            _count: { select: { followers: true } }
+          }
         },
         postRef: {
           select: {
@@ -104,26 +104,26 @@ const getByUserId = async (userId, { limit, page }) => {
             createdAt: true,
             content: true,
             type: true,
-            media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+            media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
             user: {
               select: {
                 id: true,
                 avatar: true,
                 fullName: true,
                 username: true,
-                _count: { select: { followers: true } },
-              },
+                _count: { select: { followers: true } }
+              }
             },
-            _count: { select: { likers: true, replies: true } },
-          },
+            _count: { select: { likers: true, replies: true } }
+          }
         },
-        _count: { select: { likers: true, replies: true } },
+        _count: { select: { likers: true, replies: true } }
       },
       take: limit,
       skip: (page - 1) * limit,
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' }
     }),
-    prisma.post.count({ where: { userId } }),
+    prisma.post.count({ where: { userId } })
   ]);
   return { posts, total };
 };
@@ -137,15 +137,15 @@ const editContentById = async (id, content) => {
       createdAt: true,
       content: true,
       type: true,
-      media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+      media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
       user: {
         select: {
           id: true,
           avatar: true,
           fullName: true,
           username: true,
-          _count: { select: { followers: true } },
-        },
+          _count: { select: { followers: true } }
+        }
       },
       postRef: {
         select: {
@@ -153,21 +153,21 @@ const editContentById = async (id, content) => {
           createdAt: true,
           content: true,
           type: true,
-          media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+          media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
           user: {
             select: {
               id: true,
               avatar: true,
               fullName: true,
               username: true,
-              _count: { select: { followers: true } },
-            },
+              _count: { select: { followers: true } }
+            }
           },
-          _count: { select: { likers: true, replies: true } },
-        },
+          _count: { select: { likers: true, replies: true } }
+        }
       },
-      _count: { select: { likers: true, replies: true } },
-    },
+      _count: { select: { likers: true, replies: true } }
+    }
   });
   return post;
 };
@@ -175,7 +175,7 @@ const editContentById = async (id, content) => {
 const deleteById = async (id) => {
   const post = await prisma.post.delete({
     where: { id },
-    include: { media: true },
+    include: { media: true }
   });
   return post;
 };
@@ -184,26 +184,23 @@ const searchByContent = async ({ limit, page, keyword }) => {
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({
       where: {
-        OR: [
-          { content: { contains: keyword } },
-          { content: { search: keyword } },
-        ],
-        type: "NEW",
+        OR: [{ content: { contains: keyword } }, { content: { search: keyword } }],
+        type: 'NEW'
       },
       select: {
         id: true,
         createdAt: true,
         content: true,
         type: true,
-        media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+        media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
         user: {
           select: {
             id: true,
             avatar: true,
             fullName: true,
             username: true,
-            _count: { select: { followers: true } },
-          },
+            _count: { select: { followers: true } }
+          }
         },
         postRef: {
           select: {
@@ -211,34 +208,31 @@ const searchByContent = async ({ limit, page, keyword }) => {
             createdAt: true,
             content: true,
             type: true,
-            media: { select: { mediaFileUrl: true }, orderBy: { id: "asc" } },
+            media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
             user: {
               select: {
                 id: true,
                 avatar: true,
                 fullName: true,
                 username: true,
-                _count: { select: { followers: true } },
-              },
+                _count: { select: { followers: true } }
+              }
             },
-            _count: { select: { likers: true, replies: true } },
-          },
+            _count: { select: { likers: true, replies: true } }
+          }
         },
-        _count: { select: { likers: true, replies: true } },
+        _count: { select: { likers: true, replies: true } }
       },
       take: limit,
       skip: (page - 1) * limit,
-      orderBy: [{ likers: { _count: "desc" } }, { createdAt: "desc" }],
+      orderBy: [{ likers: { _count: 'desc' } }, { createdAt: 'desc' }]
     }),
     prisma.post.count({
       where: {
-        OR: [
-          { content: { contains: keyword } },
-          { content: { search: keyword } },
-        ],
-        type: "NEW",
-      },
-    }),
+        OR: [{ content: { contains: keyword } }, { content: { search: keyword } }],
+        type: 'NEW'
+      }
+    })
   ]);
   return { posts, total };
 };
@@ -250,5 +244,5 @@ module.exports = {
   getByUserId,
   editContentById,
   deleteById,
-  searchByContent,
+  searchByContent
 };

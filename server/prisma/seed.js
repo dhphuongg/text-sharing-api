@@ -1,28 +1,28 @@
-const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcrypt");
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
 
-const { constants } = require("../src/constants");
-const { userMocks, otpMocks } = require("./mocks");
+const { constants } = require('../src/constants');
+const { userMocks, otpMocks } = require('./mocks');
 
 const prisma = new PrismaClient();
 
 async function main() {
   await prisma.otp.createMany({
     data: otpMocks,
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 
   await prisma.user.createMany({
     data: userMocks.map((user) => ({
       ...user,
-      password: bcrypt.hashSync(user.password, constants.bcryptSalt),
-    })),
+      password: bcrypt.hashSync(user.password, constants.bcryptSalt)
+    }))
   });
 }
 
 main()
   .then(async () => {
-    console.log("Seeding database successfull!");
+    console.log('Seeding database successfull!');
     await prisma.$disconnect();
   })
   .catch(async (e) => {

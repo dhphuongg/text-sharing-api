@@ -1,55 +1,52 @@
 module.exports = {
-  healthy: "Healthy",
-  sthWrong: "Something went wrong, please try again later!",
+  healthy: 'Healthy',
+  sthWrong: 'Something went wrong, please try again later!',
   responseStatus: {
-    success: "SUCCESS",
-    error: "ERROR",
+    success: 'SUCCESS',
+    error: 'ERROR'
   },
-  unauthorized:
-    "Sorry, you do not have the necessary permissions to access this resource!",
+  unauthorized: 'Sorry, you do not have the necessary permissions to access this resource!',
   account: {
-    incorrect: "Email or password is incorrect!",
-    already: "Email address is already!",
+    incorrect: 'Email or password is incorrect!',
+    already: 'Email address is already!'
   },
   password: {
-    invalid: "Unsatisfactory password!",
-    incorrect: "Incorrect password!",
-    resetSuccess: "Reset password successful!",
-    changeSuccess: "Change password successfull!",
+    invalid: 'Unsatisfactory password!',
+    incorrect: 'Incorrect password!',
+    resetSuccess: 'Reset password successful!',
+    changeSuccess: 'Change password successfull!'
   },
   username: {
-    invalid: "Unsatisfactory username!",
+    invalid: 'Unsatisfactory username!'
   },
   post_media: {
     invalid:
-      "Invalid media file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic, .mov, .mv4, .mp4 file!",
+      'Invalid media file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic, .mov, .mv4, .mp4 file!'
   },
   avatar: {
-    invalid:
-      "Invalid image file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic image!",
+    invalid: 'Invalid image file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic image!'
   },
   token: {
-    invalid: "Invalid JWT token!",
-    expired: "Expired JWT token!",
+    invalid: 'Invalid JWT token!',
+    expired: 'Expired JWT token!'
   },
   otp: {
-    invalid: "Invalid OTP!",
-    expired: "Expired OTP!",
+    invalid: 'Invalid OTP!',
+    expired: 'Expired OTP!'
   },
   mail: {
-    success: (content) =>
-      `We just have send ${content} to your email. Check it now!`,
+    success: (content) => `We just have send ${content} to your email. Check it now!`
   },
   follow: {
-    selfFollow: "Can not self-follow!",
-    selfUnfollow: "Can not self-unfollow!",
+    selfFollow: 'Can not self-follow!',
+    selfUnfollow: 'Can not self-unfollow!'
   },
   database: {
-    type: "MySQL",
-    connectSuccess: "✅ MySQL Database is connected",
-    connectFail: "❌ Connect to MySQL Database is failed",
+    type: 'MySQL',
+    connectSuccess: '✅ MySQL Database is connected',
+    connectFail: '❌ Connect to MySQL Database is failed'
   },
   required: (field) => `${field} is required!`,
   notFound: (field) => `${field} is not found!`,
-  already: (field) => `${field} is already!`,
+  already: (field) => `${field} is already!`
 };

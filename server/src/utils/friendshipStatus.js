@@ -1,13 +1,12 @@
-const { followService } = require("../services");
+const { followService } = require('../services');
 
 async function addFriendshipStatusForPostAuthor(reqAuthId, post) {
-  post.user.friendshipStatus = await followService.getFriendshipStatus(
-    reqAuthId,
-    post.user.id
-  );
+  post.user.friendshipStatus = await followService.getFriendshipStatus(reqAuthId, post.user.id);
   if (post.postRef) {
-    post.postRef.user.friendshipStatus =
-      await followService.getFriendshipStatus(reqAuthId, post.postRef.user.id);
+    post.postRef.user.friendshipStatus = await followService.getFriendshipStatus(
+      reqAuthId,
+      post.postRef.user.id
+    );
   }
   return post;
 }

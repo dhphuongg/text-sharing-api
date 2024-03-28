@@ -1,5 +1,5 @@
-const Joi = require("joi");
-const { validationConstant } = require("../constants");
+const Joi = require('joi');
+const { validationConstant } = require('../constants');
 
 const createNewPost = {
   body: Joi.object({
@@ -7,58 +7,58 @@ const createNewPost = {
     type: Joi.string()
       .valid(...Object.values(validationConstant.post.type))
       .optional(),
-    postRefId: Joi.string().uuid().optional(),
-  }).options({ stripUnknown: true }),
+    postRefId: Joi.string().uuid().optional()
+  }).options({ stripUnknown: true })
 };
 
 const getById = {
   params: Joi.object({ postId: Joi.string().uuid().required() }).options({
-    stripUnknown: true,
-  }),
+    stripUnknown: true
+  })
 };
 
 const getRepliesById = {
   params: Joi.object({ postId: Joi.string().uuid().required() }).options({
-    stripUnknown: true,
+    stripUnknown: true
   }),
   query: Joi.object({
     limit: Joi.number().min(1).optional(),
     page: Joi.number().min(1).optional(),
-    sortBy: Joi.string().optional(),
-  }).options({ stripUnknown: true }),
+    sortBy: Joi.string().optional()
+  }).options({ stripUnknown: true })
 };
 
 const getByUserId = {
   params: Joi.object({ userId: Joi.string().uuid().required() }).options({
-    stripUnknown: true,
+    stripUnknown: true
   }),
   query: Joi.object({
     limit: Joi.number().min(1).optional(),
-    page: Joi.number().min(1).optional(),
-  }).options({ stripUnknown: true }),
+    page: Joi.number().min(1).optional()
+  }).options({ stripUnknown: true })
 };
 
 const editContentByID = {
   body: Joi.object({
-    content: Joi.string().max(500).required(),
+    content: Joi.string().max(500).required()
   }).options({ stripUnknown: true }),
   params: Joi.object({ postId: Joi.string().uuid().required() }).options({
-    stripUnknown: true,
-  }),
+    stripUnknown: true
+  })
 };
 
 const likePost = {
   params: Joi.object({
-    postId: Joi.string().uuid().required(),
-  }).options({ stripUnknown: true }),
+    postId: Joi.string().uuid().required()
+  }).options({ stripUnknown: true })
 };
 
 const searchByContent = {
   query: Joi.object({
     limit: Joi.number().min(1).optional(),
     page: Joi.number().min(1).optional(),
-    keyword: Joi.string().allow("").optional(),
-  }).options({ stripUnknown: true }),
+    keyword: Joi.string().allow('').optional()
+  }).options({ stripUnknown: true })
 };
 
 module.exports = {
@@ -68,5 +68,5 @@ module.exports = {
   getByUserId,
   editContentByID,
   likePost,
-  searchByContent,
+  searchByContent
 };

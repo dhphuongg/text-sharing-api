@@ -1,5 +1,5 @@
 class ApiError extends Error {
-  constructor(status, error, isOperational = true, stack = "") {
+  constructor(status, error, isOperational = true, stack = '') {
     super(error);
     this.status = status;
     this.isOperational = isOperational;

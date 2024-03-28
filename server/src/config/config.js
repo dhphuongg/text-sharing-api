@@ -1,35 +1,35 @@
-const dotenv = require("dotenv");
-const path = require("path");
+const dotenv = require('dotenv');
+const path = require('path');
 
-dotenv.config({ path: path.join(__dirname, "../../.env") });
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 module.exports = {
   server: {
     env: process.env.NODE_ENV,
     port: process.env.PORT,
-    name: process.env.APP_NAME,
+    name: process.env.APP_NAME
   },
   jwt: {
     secret: process.env.SECRET,
     salt: process.env.SALT,
     accessExpMinutes: process.env.ACCESS_EXP_MINUTES,
-    refressExpMinutes: process.env.REFRESH_EXP_MINUTES,
+    refressExpMinutes: process.env.REFRESH_EXP_MINUTES
   },
   admin: {
     fullName: process.env.ADMIN_FULL_NAME,
     email: process.env.ADMIN_EMAIL,
     username: process.env.ADMIN_USERNAME,
-    password: process.env.ADMIN_PASSWORD,
+    password: process.env.ADMIN_PASSWORD
   },
   otp: {
-    exp: process.env.OTP_EXP_MINUTES,
+    exp: process.env.OTP_EXP_MINUTES
   },
   mail: {
     user: process.env.USER_MAIL,
-    pass: process.env.PASS_MAIL,
+    pass: process.env.PASS_MAIL
   },
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD,
-  },
+    password: process.env.REDIS_PASSWORD
+  }
 };

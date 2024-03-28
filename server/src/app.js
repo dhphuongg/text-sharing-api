@@ -1,17 +1,17 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const compression = require("compression");
-const { xss } = require("express-xss-sanitizer");
-const path = require("path");
-const httpStatus = require("http-status");
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
+const { xss } = require('express-xss-sanitizer');
+const path = require('path');
+const httpStatus = require('http-status');
 
-const config = require("./config/config");
-const morgan = require("./config/morgan.config");
-const { errorConverter, errorHandler } = require("./middlewares").error;
-const router = require("./routes/v1");
-const { messageConstant, constants } = require("./constants");
-const ApiError = require("./utils/ApiError");
+const config = require('./config/config');
+const morgan = require('./config/morgan.config');
+const { errorConverter, errorHandler } = require('./middlewares').error;
+const router = require('./routes/v1');
+const { messageConstant, constants } = require('./constants');
+const ApiError = require('./utils/ApiError');
 
 const app = express();
 
@@ -40,13 +40,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // health check
-app.get("/~", (req, res) =>
-  res.json({ status: httpStatus.OK, message: messageConstant.healthy })
-);
+app.get('/~', (req, res) => res.json({ status: httpStatus.OK, message: messageConstant.healthy }));
 // api v1 routes
-app.use("/api/v1", router);
+app.use('/api/v1', router);
 // api not found
-app.all("*", (req, res, next) => {
+app.all('*', (req, res, next) => {
   return next(
     new ApiError(
       httpStatus.NOT_FOUND,

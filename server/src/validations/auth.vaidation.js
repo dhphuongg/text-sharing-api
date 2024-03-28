@@ -1,32 +1,24 @@
-const Joi = require("joi");
-const { validationConstant } = require("../constants");
+const Joi = require('joi');
+const { validationConstant } = require('../constants');
 
 const login = {
   body: Joi.object()
     .keys({
-      email: Joi.string()
-        .email()
-        .required()
-        .label(validationConstant.label.user.email),
+      email: Joi.string().email().required().label(validationConstant.label.user.email),
       password: Joi.string()
         .min(validationConstant.password.minLength)
         .pattern(validationConstant.password.regex)
         .required()
-        .label(validationConstant.label.user.password),
+        .label(validationConstant.label.user.password)
     })
-    .options({ stripUnknown: true }),
+    .options({ stripUnknown: true })
 };
 
 const register = {
   body: Joi.object()
     .keys({
-      fullName: Joi.string()
-        .required()
-        .label(validationConstant.label.user.fullName),
-      email: Joi.string()
-        .email()
-        .required()
-        .label(validationConstant.label.user.email),
+      fullName: Joi.string().required().label(validationConstant.label.user.fullName),
+      email: Joi.string().email().required().label(validationConstant.label.user.email),
       username: Joi.string()
         .max(validationConstant.username.maxlength)
         .pattern(validationConstant.username.regex)
@@ -36,7 +28,7 @@ const register = {
         .min(validationConstant.password.minLength)
         .pattern(validationConstant.password.regex)
         .required()
-        .label(validationConstant.label.user.password),
+        .label(validationConstant.label.user.password)
     })
     .options({ stripUnknown: true }),
   headers: Joi.object()
@@ -45,9 +37,9 @@ const register = {
         .min(validationConstant.otp.min)
         .max(validationConstant.otp.max)
         .required()
-        .label(validationConstant.label.otp),
+        .label(validationConstant.label.otp)
     })
-    .options({ stripUnknown: true }),
+    .options({ stripUnknown: true })
 };
 
 const sendOtp = {
@@ -55,26 +47,19 @@ const sendOtp = {
     job: Joi.string()
       .valid(...Object.values(validationConstant.otp.job))
       .required(),
-    email: Joi.string()
-      .email()
-      .required()
-      .label(validationConstant.label.user.email),
-  })
-    .options({ stripUnknown: true }),
+    email: Joi.string().email().required().label(validationConstant.label.user.email)
+  }).options({ stripUnknown: true })
 };
 
 const resetPassword = {
   body: Joi.object()
     .keys({
-      email: Joi.string()
-        .email()
-        .required()
-        .label(validationConstant.label.user.email),
+      email: Joi.string().email().required().label(validationConstant.label.user.email),
       password: Joi.string()
         .min(validationConstant.password.minLength)
         .pattern(validationConstant.password.regex)
         .required()
-        .label(validationConstant.label.user.password),
+        .label(validationConstant.label.user.password)
     })
     .options({ stripUnknown: true }),
   headers: Joi.object()
@@ -83,9 +68,9 @@ const resetPassword = {
         .min(validationConstant.otp.min)
         .max(validationConstant.otp.max)
         .required()
-        .label(validationConstant.label.otp),
+        .label(validationConstant.label.otp)
     })
-    .options({ stripUnknown: true }),
+    .options({ stripUnknown: true })
 };
 
 module.exports = { login, register, sendOtp, resetPassword };

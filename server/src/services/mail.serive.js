@@ -1,24 +1,24 @@
-const nodemailer = require("nodemailer");
-const Queue = require("bull");
+const nodemailer = require('nodemailer');
+const Queue = require('bull');
 
-const config = require("../config/config");
-const logger = require("../config/winston.config");
+const config = require('../config/config');
+const logger = require('../config/winston.config');
 
 const sendMailHelper = async (to, subject, html) => {
   const transport = nodemailer.createTransport({
-    service: "Gmail",
-    auth: config.mail,
+    service: 'Gmail',
+    auth: config.mail
   });
 
   await transport.sendMail({
-    from: "HIT Circle <no_reply@hit.circle.com>",
+    from: 'HIT Circle <no_reply@hit.circle.com>',
     to,
     subject,
-    html,
+    html
   });
 };
 
-const mailQueue = new Queue("mail", { redis: config.redis });
+const mailQueue = new Queue('mail', { redis: config.redis });
 
 mailQueue.process(async (job, done) => {
   try {
@@ -26,8 +26,8 @@ mailQueue.process(async (job, done) => {
     await sendMailHelper(email, subject, template);
     done();
   } catch (error) {
-    logger.error(error, { label: "mail queue" });
-    done(new Error("error mail queue"));
+    logger.error(error, { label: 'mail queue' });
+    done(new Error('error mail queue'));
   }
 });
 

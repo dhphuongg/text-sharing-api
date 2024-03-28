@@ -1,13 +1,8 @@
-const { constants } = require("../constants");
-const pick = require("./pick");
+const { constants } = require('../constants');
+const pick = require('./pick');
 
 function getOptions(query) {
-  let { limit, page, sortBy, keyword } = pick(query, [
-    "limit",
-    "page",
-    "sortBy",
-    "keyword",
-  ]);
+  let { limit, page, sortBy, keyword } = pick(query, ['limit', 'page', 'sortBy', 'keyword']);
 
   if (!limit) limit = constants.limitDefault;
   else limit = parseInt(limit);
