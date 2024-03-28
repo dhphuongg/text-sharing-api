@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const httpStatus = require('http-status');
 
-const { userService, followService } = require('../services');
+const { userService, followService, notificationService } = require('../services');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
 const { getOptions } = require('../utils/getPaginationAndSort');
@@ -72,6 +72,7 @@ const follow = catchAsync(async (req, res, next) => {
     return next(new ApiError(httpStatus.BAD_REQUEST, messageConstant.already('Follow')));
   }
   const follow = await followService.createById(req.auth.id, userId);
+  await notificationService.createNotification(req.auth.id, userId);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,
