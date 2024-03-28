@@ -158,6 +158,24 @@ const getFollowingById = catchAsync(async (req, res, next) => {
   });
 });
 
+const search = catchAsync(async (req, res, next) => {
+  const { limit, page, keyword } = getOptions(req.query);
+  const { users, total } = await userService.search({ limit, page, keyword });
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    user.friendshipStatus = await followService.getFriendshipStatus(
+      req.auth?.id,
+      user.id
+    );
+  }
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: { users, limit, page, total, keyword },
+    error: null,
+  });
+});
+
 module.exports = {
   getById,
   getProfile,
@@ -167,4 +185,5 @@ module.exports = {
   unfollow,
   getFollowersById,
   getFollowingById,
+  search,
 };

@@ -80,6 +80,43 @@ const updateById = async (id, data) => {
   return user;
 };
 
+const search = async ({ keyword, limit, page }) => {
+  const [users, total] = await prisma.$transaction([
+    prisma.user.findMany({
+      where: {
+        OR: [
+          { username: { search: keyword } },
+          { username: { contains: keyword } },
+          { fullName: { search: keyword } },
+          { fullName: { contains: keyword } },
+        ],
+      },
+      select: {
+        id: true,
+        avatar: true,
+        fullName: true,
+        username: true,
+        birthday: true,
+        bio: true,
+        _count: { select: { followers: true } },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    }),
+    prisma.user.count({
+      where: {
+        OR: [
+          { username: { search: keyword } },
+          { username: { contains: keyword } },
+          { fullName: { search: keyword } },
+          { fullName: { contains: keyword } },
+        ],
+      },
+    }),
+  ]);
+  return { users, total };
+};
+
 module.exports = {
   create,
   getFullById,
@@ -87,4 +124,5 @@ module.exports = {
   getByEmail,
   updatePasswordById,
   updateById,
+  search,
 };

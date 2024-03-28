@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -52,6 +53,7 @@ model User {
   postsLiked Reation[]
   otp        Otp       @relation(fields: [email], references: [email])
 
+  @@fulltext([fullName, username])
   @@map("users")
 }
 
@@ -99,6 +101,7 @@ model Post {
   postRef   Post?       @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: SetNull)
   likers    Reation[]
 
+  @@fulltext([content])
   @@map("posts")
 }
 
