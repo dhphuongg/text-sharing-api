@@ -5,7 +5,7 @@ const { userValidation, postValidation } = require("../../validations");
 const { userController, postController } = require("../../controllers");
 
 router
-  .get("/search", userController.search)
+  .get("/search", validate(userValidation.search), userController.search)
   .get("/:userId", validate(userValidation.getById), userController.getById)
   .get(
     "/:userId/post",

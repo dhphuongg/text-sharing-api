@@ -53,6 +53,14 @@ const likePost = {
   }).options({ stripUnknown: true }),
 };
 
+const searchByContent = {
+  query: Joi.object({
+    limit: Joi.number().min(1).optional(),
+    page: Joi.number().min(1).optional(),
+    keyword: Joi.string().allow("").optional(),
+  }).options({ stripUnknown: true }),
+};
+
 module.exports = {
   createNewPost,
   getById,
@@ -60,4 +68,5 @@ module.exports = {
   getByUserId,
   editContentByID,
   likePost,
+  searchByContent,
 };

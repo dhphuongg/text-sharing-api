@@ -229,6 +229,24 @@ const getLikerByPostId = catchAsync(async (req, res, next) => {
   });
 });
 
+const searchByContent = catchAsync(async (req, res, next) => {
+  const { keyword, limit, page } = getOptions(req.query);
+  const { posts, total } = await postService.searchByContent({
+    limit,
+    page,
+    keyword,
+  });
+  for (let i = 0; i < posts.length; i++) {
+    await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
+  }
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: messageConstant.responseStatus.success,
+    data: { posts, limit, page, total, keyword },
+    error: null,
+  });
+});
+
 module.exports = {
   createNewPost,
   getById,
@@ -240,4 +258,5 @@ module.exports = {
   unlikePostById,
   getMyLikedPosts,
   getLikerByPostId,
+  searchByContent,
 };

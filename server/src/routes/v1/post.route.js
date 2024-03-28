@@ -6,6 +6,11 @@ const router = require("express").Router();
 
 router
   .get("/liked", postController.getMyLikedPosts)
+  .get(
+    "/search",
+    validate(postValidation.searchByContent),
+    postController.searchByContent
+  )
   .get("/:postId", validate(postValidation.getById), postController.getById)
   .get(
     "/:postId/replies",
