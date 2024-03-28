@@ -1,3 +1,5 @@
+const validationConstant = require('./validation.constant');
+
 module.exports = {
   healthy: 'Healthy',
   sthWrong: 'Something went wrong, please try again later!',
@@ -45,6 +47,13 @@ module.exports = {
     type: 'MySQL',
     connectSuccess: '✅ MySQL Database is connected',
     connectFail: '❌ Connect to MySQL Database is failed'
+  },
+  notifyContent: {
+    [validationConstant.event.follow]: 'started following you.',
+    [validationConstant.event.likePost]: 'liked your post.',
+    [validationConstant.event.likeReply]: 'liked your reply.',
+    [validationConstant.event.reply]: 'reply your post.',
+    [validationConstant.event.quote]: 'quote your post.'
   },
   required: (field) => `${field} is required!`,
   notFound: (field) => `${field} is not found!`,

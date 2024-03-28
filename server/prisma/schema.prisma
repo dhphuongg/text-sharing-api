@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
@@ -36,22 +36,24 @@ model Otp {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  createdAt  DateTime  @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  updateAt   DateTime  @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
-  fullName   String    @map("full_name")
-  email      String    @unique
-  username   String    @unique @db.VarChar(30)
-  password   String
-  avatar     String?
-  birthday   DateTime?
-  bio        String?   @db.VarChar(150)
-  role       Role      @default(USER)
-  followers  Follow[]  @relation(name: "follower")
-  following  Follow[]  @relation(name: "following")
-  posts      Post[]
-  postsLiked Reation[]
-  otp        Otp       @relation(fields: [email], references: [email])
+  id            String         @id @default(uuid())
+  createdAt     DateTime       @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  updateAt      DateTime       @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
+  fullName      String         @map("full_name")
+  email         String         @unique
+  username      String         @unique @db.VarChar(30)
+  password      String
+  avatar        String?
+  birthday      DateTime?
+  bio           String?        @db.VarChar(150)
+  role          Role           @default(USER)
+  followers     Follow[]       @relation(name: "follower")
+  following     Follow[]       @relation(name: "following")
+  posts         Post[]
+  postsLiked    Reation[]
+  otp           Otp            @relation(fields: [email], references: [email])
+  notifiactions Notification[] @relation(name: "notification")
+  activities    Notification[] @relation(name: "activity")
 
   @@fulltext([fullName, username])
   @@map("users")
@@ -86,20 +88,21 @@ model PostMedia {
 }
 
 model Post {
-  id        String      @id @default(uuid())
-  createdAt DateTime    @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  updateAt  DateTime    @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
-  content   String?     @db.VarChar(500)
-  media     PostMedia[]
-  type      PostType    @default(NEW)
+  id            String         @id @default(uuid())
+  createdAt     DateTime       @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  updateAt      DateTime       @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
+  content       String?        @db.VarChar(500)
+  media         PostMedia[]
+  type          PostType       @default(NEW)
   // author
-  userId    String      @map("user_id")
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  replies   Post[]      @relation(name: "PostReplies")
+  userId        String         @map("user_id")
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies       Post[]         @relation(name: "PostReplies")
   // post reference
-  postRefId String?     @map("post_ref_id")
-  postRef   Post?       @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: SetNull)
-  likers    Reation[]
+  postRefId     String?        @map("post_ref_id")
+  postRef       Post?          @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: SetNull)
+  likers        Reation[]
+  notifications Notification[]
 
   @@fulltext([content])
   @@map("posts")
@@ -114,4 +117,27 @@ model Reation {
 
   @@id([postId, userId])
   @@map("reactions")
+}
+
+enum Event {
+  FOLLOW
+  LIKE_POST
+  LIKE_REPLY
+  REPLY
+  QUOTE
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  receiverId String
+  receiver   User     @relation(name: "notification", fields: [receiverId], references: [id])
+  actorId    String
+  actor      User     @relation(name: "activity", fields: [actorId], references: [id])
+  postId     String?
+  post       Post?    @relation(fields: [postId], references: [id], onDelete: SetNull)
+  event      Event
+  content    String
+
+  @@map("notifications")
 }

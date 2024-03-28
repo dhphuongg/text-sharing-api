@@ -53,5 +53,12 @@ module.exports = {
       reply: 'REPLY',
       quote: 'QUOTE'
     }
+  },
+  event: {
+    follow: 'FOLLOW',
+    likePost: 'LIKE_POST',
+    likeReply: 'LIKE_REPLY',
+    reply: 'REPLY',
+    quote: 'QUOTE'
   }
 };
