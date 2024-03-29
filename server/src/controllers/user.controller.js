@@ -72,7 +72,11 @@ const follow = catchAsync(async (req, res, next) => {
     return next(new ApiError(httpStatus.BAD_REQUEST, messageConstant.already('Follow')));
   }
   const follow = await followService.createById(req.auth.id, userId);
-  await notificationService.createNotification(req.auth.id, userId);
+  const notifications = await notificationService.createNotification(req.auth.id, userId);
+  _io.emit(
+    `notifications-${userId}`,
+    `${follow.followBy.username} ${messageConstant.notifyContent[notifications.event]}`
+  );
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: messageConstant.responseStatus.success,

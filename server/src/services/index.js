@@ -7,3 +7,4 @@ module.exports.postService = require('./post.service');
 module.exports.postMediaService = require('./postMedia.service');
 module.exports.reactionService = require('./reaction.service');
 module.exports.notificationService = require('./notification.service');
+module.exports.socketService = require('./socket.service');

@@ -1,4 +1,6 @@
 const express = require('express');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -12,8 +14,20 @@ const { errorConverter, errorHandler } = require('./middlewares').error;
 const router = require('./routes/v1');
 const { messageConstant, constants } = require('./constants');
 const ApiError = require('./utils/ApiError');
+const { authSocket } = require('./middlewares');
+const { socketService } = require('./services');
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true
+  },
+  transports: 'websocket'
+});
+global._io = io;
 
 // morgan
 if (config.server.env !== constants.mode.test) {
@@ -53,8 +67,11 @@ app.all('*', (req, res, next) => {
   );
 });
 
+_io.use(authSocket);
+_io.on('connection', socketService.connection);
+
 // Errors handler
 app.use(errorConverter);
 app.use(errorHandler);
 
-module.exports = app;
+module.exports = httpServer;

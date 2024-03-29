@@ -25,4 +25,21 @@ const authorize = (roles = [constants.role.user]) =>
     return next();
   });
 
-module.exports = authorize;
+const authSocket = async (socket, next) => {
+  try {
+    // const token = socket.handshake.auth.token;
+    const token = socket.handshake.query.token;
+    if (!token) {
+      return next(new ApiError(httpStatus.UNAUTHORIZED, messageConstant.required('Token')));
+    }
+    const decoded = jwt.verifyToken(token, config.jwt.secret);
+    const user = await userService.getFullById(decoded.sub);
+    if (!user) return next(new ApiError(httpStatus.UNAUTHORIZED, messageConstant.token.invalid));
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+};
+
+module.exports = { authorize, authSocket };
