@@ -162,11 +162,15 @@ const likePostById = catchAsync(async (req, res, next) => {
   if (reaction.post.type === validationConstant.post.type.reply) {
     event = validationConstant.event.likeReply;
   }
-  await notificationService.createNotification(
+  const notification = await notificationService.createNotification(
     req.auth.id,
     reaction.post.userId,
     event,
     reaction.post.id
+  );
+  _io.emit(
+    `notifications-${reaction.post.userId}`,
+    `${req.auth.username} ${messageConstant.notifyContent[notification.event]}`
   );
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
