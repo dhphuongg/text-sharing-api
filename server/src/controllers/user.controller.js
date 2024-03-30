@@ -7,18 +7,19 @@ const pick = require('../utils/pick');
 const { getOptions } = require('../utils/getPaginationAndSort');
 const destroyFileByPath = require('../utils/destroyFile');
 const ApiError = require('../utils/ApiError');
-const { messageConstant } = require('../constants');
+const { constants } = require('../constants');
+const LocaleKey = require('../locales/key.locale');
 
 const changePassword = catchAsync(async (req, res, next) => {
   const { oldPassword, newPassword } = pick(req.body, ['oldPassword', 'newPassword']);
   if (!(await bcrypt.compare(oldPassword, req.auth.password))) {
-    return next(new ApiError(httpStatus.UNAUTHORIZED, messageConstant.password.incorrect));
+    return next(new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.PASSWORD_INCORRECT)));
   }
   await userService.updatePasswordById(req.auth.id, newPassword);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
-    data: messageConstant.password.changeSuccess,
+    message: constants.message.success,
+    data: _t(LocaleKey.PASSWORD_CHANGE_SUCCESS),
     error: null
   });
 });
@@ -33,7 +34,7 @@ const updateProfile = catchAsync(async (req, res, next) => {
   const user = await userService.updateById(req.auth.id, data);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: user,
     error: null
   });
@@ -43,12 +44,12 @@ const getById = catchAsync(async (req, res, next) => {
   const { userId } = pick(req.params, ['userId']);
   const user = await userService.getById(userId);
   if (!user) {
-    return next(new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('User')));
+    return next(new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.USER))));
   }
   user.friendshipStatus = await followService.getFriendshipStatus(req.auth.id, user.id);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: user,
     error: null
   });
@@ -58,7 +59,7 @@ const getProfile = catchAsync(async (req, res, next) => {
   const user = await userService.getById(req.auth.id);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: user,
     error: null
   });
@@ -67,20 +68,20 @@ const getProfile = catchAsync(async (req, res, next) => {
 const follow = catchAsync(async (req, res, next) => {
   const { userId } = pick(req.params, ['userId']);
   if (req.auth.id === userId) {
-    return next(new ApiError(httpStatus.BAD_REQUEST, messageConstant.follow.selfFollow));
+    return next(new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.SELF_FOLLOW)));
   } else if (await followService.getById(req.auth.id, userId)) {
-    return next(new ApiError(httpStatus.BAD_REQUEST, messageConstant.already('Follow')));
+    return next(new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.FOLLOW_ALREADY)));
   }
   const follow = await followService.createById(req.auth.id, userId);
-  const notifications = await notificationService.createNotification(req.auth.id, userId);
+  await notificationService.createNotification(req.auth.id, userId);
   socketService.emit(
     `notifications-${userId}`,
-    `${follow.followBy.username} ${messageConstant.notifyContent[notifications.event]}`
+    `${follow.followBy.username} ${_t(LocaleKey.NOTIFICATION_FOLLOW)}`
   );
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
-    data: follow,
+    message: constants.message.success,
+    data: _t(LocaleKey.FOLLOW_SUCCESS),
     error: null
   });
 });
@@ -88,15 +89,15 @@ const follow = catchAsync(async (req, res, next) => {
 const unfollow = catchAsync(async (req, res, next) => {
   const { userId } = pick(req.params, ['userId']);
   if (req.auth.id === userId) {
-    return next(new ApiError(httpStatus.BAD_REQUEST, messageConstant.follow.selfUnfollow));
+    return next(new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.SELF_UNFOLLOW)));
   } else if (!(await followService.getById(req.auth.id, userId))) {
-    return next(new ApiError(httpStatus.BAD_REQUEST, messageConstant.notFound('Follow')));
+    return next(new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.UNFOLLOW_FAILED)));
   }
   const follow = await followService.deleteById(req.auth.id, userId);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
-    data: null,
+    message: constants.message.success,
+    data: _t(LocaleKey.UNFOLLOW_SUCCESS),
     error: null
   });
 });
@@ -114,7 +115,7 @@ const getFollowersById = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { users, limit, page, total },
     error: null
   });
@@ -133,7 +134,7 @@ const getFollowingById = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { users, limit, page, total },
     error: null
   });
@@ -148,7 +149,7 @@ const search = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { users, limit, page, total, keyword },
     error: null
   });

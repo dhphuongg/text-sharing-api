@@ -19,14 +19,25 @@ module.exports = {
   [LocaleKey.TOKEN_EXPIRED]: 'Token đã hết hạn!',
   [LocaleKey.OTP_INVALID]: 'Mã OTP không hợp lệ!',
   [LocaleKey.OTP_EXPIRED]: 'Mã OTP đã hết hạn!',
-  [LocaleKey.MAIL_SUCCESS]: (content) =>
-    `Chúng tôi vừa gửi ${content} tới email của bạn. Hãy kiểm tra hòm thư!`,
+  [LocaleKey.MAIL_SUCCESS]: 'Chúng tôi vừa gửi %s tới email của bạn. Hãy kiểm tra hòm thư!',
+  [LocaleKey.FOLLOW_ALREADY]: 'Bạn đã và đang theo dõi người dùng này!',
+  [LocaleKey.FOLLOW_SUCCESS]: 'Theo dõi thành công!',
+  [LocaleKey.UNFOLLOW_SUCCESS]: 'Hủy theo dõi thành công!',
+  [LocaleKey.UNFOLLOW_FAILED]: 'Hủy theo dõi thất bại!',
   [LocaleKey.SELF_FOLLOW]: 'Không thể tự theo dõi bản thân!',
   [LocaleKey.SELF_UNFOLLOW]: 'Không thể tự hủy theo dõi bản thân!',
+  [LocaleKey.LIKE_SUCCESS]: 'Yêu thích thành công!',
+  [LocaleKey.UNLIKE_SUCCESS]: 'Hủy yêu thích thành công!',
   [LocaleKey.NOTIFICATION_FOLLOW]: 'bắt đầu theo dõi bạn.',
   [LocaleKey.NOTIFICATION_LIKE_POST]: 'đã thích bài biết của bạn.',
   [LocaleKey.NOTIFICATION_LIKE_REPLY]: 'đã thích trả lời của bạn.',
   [LocaleKey.NOTIFICATION_NEW]: 'đã tạo bài viết mới.',
   [LocaleKey.NOTIFICATION_REPLY]: 'đã trả lời bạn.',
-  [LocaleKey.NOTIFICATION_QUOTE]: 'đã trích dẫn bài viết của bạn.'
+  [LocaleKey.NOTIFICATION_QUOTE]: 'đã trích dẫn bài viết của bạn.',
+  [LocaleKey.NOT_FOUND]: '%s không tồn tại!',
+  [LocaleKey.REQUIRED]: '%s được yêu cầu bắt buộc!',
+  [LocaleKey.ALREADY]: '%s đã tồn tại!',
+  [LocaleKey.USER]: 'Người dùng',
+  [LocaleKey.POST]: 'Bài viết',
+  [LocaleKey.FOLLOW]: 'Theo dõi'
 };

@@ -1,7 +1,5 @@
-module.exports.messageConstant = require('./message.constant');
 module.exports.validationConstant = require('./validation.constant');
 module.exports.constants = {
-  message: this.messageConstant,
   validation: this.validationConstant,
   app: {
     name: 'HIT Circle'
@@ -24,5 +22,9 @@ module.exports.constants = {
     access: 'access',
     refresh: 'refresh'
   },
-  emptyString: ''
+  emptyString: '',
+  message: {
+    success: 'SUCCESS',
+    error: 'ERROR'
+  }
 };

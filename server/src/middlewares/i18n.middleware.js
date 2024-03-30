@@ -21,8 +21,8 @@ const i18nInit = (req, res, next) => {
   return i18n.init(req, res, next);
 };
 
-const translate = (key) => {
-  return i18n.__(key);
+const translate = (phrase, ...replace) => {
+  return i18n.__(phrase, ...replace);
 };
 
 global._t = translate;

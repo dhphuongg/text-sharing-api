@@ -13,7 +13,7 @@ const config = require('./config/config');
 const morgan = require('./config/morgan.config');
 const { errorConverter, errorHandler } = require('./middlewares').error;
 const router = require('./routes/v1');
-const { messageConstant, constants } = require('./constants');
+const { constants } = require('./constants');
 const ApiError = require('./utils/ApiError');
 const { authSocket, i18nInit } = require('./middlewares');
 const { socketService } = require('./services');
@@ -68,10 +68,7 @@ app.use('/api/v1', router);
 // api not found
 app.all('*', (req, res, next) => {
   return next(
-    new ApiError(
-      httpStatus.NOT_FOUND,
-      messageConstant.notFound(`Api ${req.method} ${req.originalUrl}`)
-    )
+    new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, `API ${req.method} ${req.url}`))
   );
 });
 

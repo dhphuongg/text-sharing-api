@@ -1,5 +1,3 @@
-const { password, avatar } = require('./message.constant');
-
 module.exports = {
   label: {
     user: {

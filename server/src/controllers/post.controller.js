@@ -10,22 +10,23 @@ const {
 } = require('../services');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
-const { messageConstant, validationConstant } = require('../constants');
+const { validationConstant, constants } = require('../constants');
 const ApiError = require('../utils/ApiError');
 const destroyFileByPath = require('../utils/destroyFile');
 const { getOptions } = require('../utils/getPaginationAndSort');
 const { addFriendshipStatusForPostAuthor } = require('../utils/friendshipStatus');
+const LocaleKey = require('../locales/key.locale');
 
 const createNewPost = catchAsync(async (req, res, next) => {
   const { content, type, postRefId } = pick(req.body, ['content', 'type', 'postRefId']);
   const myId = req.auth.id;
   if (!content && !req.files) {
-    throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.required('Content or Media'));
+    throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Content or Media'));
   }
   let post;
   if (type && type !== validationConstant.post.type.new) {
     if (!postRefId) {
-      throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.required('Post reference id'));
+      throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Post reference id'));
     }
     post = await postService.createNewPost(myId, content, type, postRefId);
     // Create notification
@@ -37,7 +38,7 @@ const createNewPost = catchAsync(async (req, res, next) => {
     );
     socketService.emit(
       `notifications-${post.postRef.userId}`,
-      `${req.auth.username} ${messageConstant.notifyContent[post.type]}`
+      `${req.auth.username} ${_t(LocaleKey[`NOTIFICATION_${post.type}`])}`
     );
   } else {
     post = await postService.createNewPost(myId, content);
@@ -47,7 +48,7 @@ const createNewPost = catchAsync(async (req, res, next) => {
       await notificationService.createNotification(myId, followers[i].id, post.type, post.id);
       socketService.emit(
         `notifications-${followers[i].id}`,
-        `${req.auth.username} ${messageConstant.notifyContent[post.type]}`
+        `${req.auth.username} ${_t(LocaleKey[`NOTIFICATION_${post.type}`])}`
       );
     }
   }
@@ -57,7 +58,7 @@ const createNewPost = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: await postService.getById(post.id),
     error: null
   });
@@ -67,12 +68,12 @@ const getById = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   const post = await postService.getById(postId);
   if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   await addFriendshipStatusForPostAuthor(req.auth.id, post);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: post,
     error: null
   });
@@ -91,7 +92,7 @@ const getRepliesById = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: {
       replies,
       limit,
@@ -115,7 +116,7 @@ const getByUserId = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { posts, limit, page, total },
     error: null
   });
@@ -126,15 +127,15 @@ const editContentById = catchAsync(async (req, res, next) => {
   const { content } = pick(req.body, ['content']);
   let post = await postService.getById(postId);
   if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   if (post.user.id !== req.auth.id) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
+    throw new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.UNAUTHORIZED));
   }
   post = await postService.editContentById(postId, content);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: post,
     error: null
   });
@@ -144,10 +145,10 @@ const deleteById = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   const post = await postService.getById(postId);
   if (!post) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   if (post.user.id !== req.auth.id) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.unauthorized);
+    throw new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.UNAUTHORIZED));
   }
   await postService.deleteById(postId);
   for (let i = 0; i < post.media.length; i++) {
@@ -155,7 +156,7 @@ const deleteById = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: null,
     error: null
   });
@@ -164,7 +165,7 @@ const deleteById = catchAsync(async (req, res, next) => {
 const likePostById = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   if (!(await postService.getById(postId))) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   const reaction = await reactionService.create(req.auth.id, postId);
   let event = validationConstant.event.likePost;
@@ -179,12 +180,12 @@ const likePostById = catchAsync(async (req, res, next) => {
   );
   socketService.emit(
     `notifications-${reaction.post.userId}`,
-    `${req.auth.username} ${messageConstant.notifyContent[notification.event]}`
+    `${req.auth.username} ${_t(LocaleKey[`NOTIFICATION_${notification.event}`])}`
   );
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
-    message: messageConstant.responseStatus.success,
-    data: null,
+    message: constants.message.success,
+    data: _t(LocaleKey.LIKE_SUCCESS),
     error: null
   });
 });
@@ -192,13 +193,13 @@ const likePostById = catchAsync(async (req, res, next) => {
 const unlikePostById = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   if (!(await postService.getById(postId))) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   const reaction = await reactionService.deleteById(req.auth.id, postId);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
-    data: null,
+    message: constants.message.success,
+    data: _t(LocaleKey.UNLIKE_SUCCESS),
     error: null
   });
 });
@@ -215,7 +216,7 @@ const getMyLikedPosts = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { posts, limit, page, total },
     error: null
   });
@@ -224,7 +225,7 @@ const getMyLikedPosts = catchAsync(async (req, res, next) => {
 const getLikerByPostId = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   if (!(await postService.getById(postId))) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Post'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   const { limit, page } = getOptions(req.query);
   const { users, total } = await reactionService.getLikersByPostId(postId, {
@@ -236,7 +237,7 @@ const getLikerByPostId = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { users, limit, page, total },
     error: null
   });
@@ -254,7 +255,7 @@ const searchByContent = catchAsync(async (req, res, next) => {
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
-    message: messageConstant.responseStatus.success,
+    message: constants.message.success,
     data: { posts, limit, page, total, keyword },
     error: null
   });

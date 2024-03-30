@@ -4,7 +4,8 @@ const config = require('../config/config');
 const prisma = require('../prisma-client');
 const ApiError = require('../utils/ApiError');
 const { otpGenerator } = require('../utils/random');
-const { messageConstant, validationConstant } = require('../constants');
+const { validationConstant } = require('../constants');
+const LocaleKey = require('../locales/key.locale');
 
 const create = async (email, job) => {
   const otp = await prisma.otp.create({
@@ -46,11 +47,11 @@ const updateOtpByEmail = async (email, job) => {
 const verify = async (email, otpCode, job) => {
   const otp = await getByEmail(email);
   if (!otp) {
-    throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Email'));
+    throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, 'Email'));
   } else if (otp.code !== parseInt(otpCode) || otp.job !== job) {
-    throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.otp.invalid);
+    throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.OTP_INVALID));
   } else if (new Date(otp.deletedAt) < new Date()) {
-    throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.otp.expired);
+    throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.OTP_EXPIRED));
   }
   const newOtp = await prisma.otp.update({
     where: { email },

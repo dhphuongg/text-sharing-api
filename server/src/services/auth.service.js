@@ -6,15 +6,16 @@ const path = require('path');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const jwt = require('../utils/jwt');
-const { constants, messageConstant } = require('../constants');
+const { constants } = require('../constants');
 const userService = require('./user.service');
 const otpService = require('./otp.service');
 const mailService = require('./mail.serive');
+const LocaleKey = require('../locales/key.locale');
 
 const login = async ({ email, password }) => {
   const user = await userService.getByEmail(email);
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, messageConstant.account.incorrect);
+    throw new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.ACCOUNT_INCORRECT));
   }
   const accessToken = jwt.generateToken(user.id, constants.tokenType.access);
   const refreshToken = jwt.generateToken(user.id, constants.tokenType.refresh);
@@ -42,13 +43,13 @@ const sendOtp = async (email, job) => {
   let newOtp;
   if (job === constants.validation.otp.job.resetPassword) {
     if (!oldOtp || !oldOtp.user) {
-      throw new ApiError(httpStatus.NOT_FOUND, messageConstant.notFound('Email'));
+      throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, 'Email'));
     }
     newOtp = await otpService.updateOtpByEmail(email, job);
   } else if (job === constants.validation.otp.job.register) {
     if (oldOtp) {
       if (oldOtp.user) {
-        throw new ApiError(httpStatus.BAD_REQUEST, messageConstant.account.already);
+        throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.ACCOUNT_ALREADY));
       }
       newOtp = await otpService.updateOtpByEmail(email, job);
     } else {

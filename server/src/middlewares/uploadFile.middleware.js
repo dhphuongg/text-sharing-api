@@ -2,7 +2,8 @@ const path = require('path');
 const multer = require('multer');
 const crypto = require('crypto');
 
-const { constants, messageConstant, validationConstant } = require('../constants');
+const { constants, validationConstant } = require('../constants');
+const LocaleKey = require('../locales/key.locale');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,7 +22,7 @@ const avtUpload = multer({
   fileFilter: function (req, file, cb) {
     const ext = path.extname(file.originalname);
     if (!validationConstant[file.fieldname].allow.includes(ext)) {
-      return cb(new Error(messageConstant[file.fieldname].invalid));
+      return cb(new Error(_t(LocaleKey.AVATAR_INVALID)));
     }
     cb(null, true);
   },
@@ -33,7 +34,7 @@ const postMediaUpload = multer({
   fileFilter: function (req, file, cb) {
     const ext = path.extname(file.originalname);
     if (!validationConstant[file.fieldname].allow.includes(ext)) {
-      return cb(new Error(messageConstant[file.fieldname].invalid));
+      return cb(new Error(_t(LocaleKey.POST_MEDIA_INVALID)));
     }
     cb(null, true);
   },

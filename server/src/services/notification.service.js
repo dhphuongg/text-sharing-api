@@ -1,6 +1,7 @@
-const messageConstant = require('../constants/message.constant');
 const validationConstant = require('../constants/validation.constant');
 const prisma = require('../prisma-client');
+const LocaleKey = require('../locales/key.locale');
+const locale = require('../locales/locale');
 
 const createNotification = async (
   actorId,
@@ -14,7 +15,7 @@ const createNotification = async (
       receiverId,
       postId,
       event,
-      content: messageConstant.notifyContent[event]
+      content: _t({ phrase: LocaleKey[`NOTIFICATION_${event}`], locale: locale.en })
     }
   });
   return notification;

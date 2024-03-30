@@ -5,8 +5,9 @@ const multer = require('multer');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const logger = require('../config/winston.config');
-const { messageConstant, constants } = require('../constants');
+const { constants } = require('../constants');
 const destroyFileByPath = require('../utils/destroyFile');
+const LocaleKey = require('../locales/key.locale');
 
 const handlePrismaError = (err) => {
   switch (err.code) {
@@ -48,9 +49,9 @@ const errorConverter = async (err, req, res, next) => {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     err = handlePrismaError(err);
   } else if (err.name === 'JsonWebTokenError') {
-    return next(new ApiError(httpStatus.UNAUTHORIZED, messageConstant.token.invalid));
+    return next(new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.TOKEN_INVALID)));
   } else if (err.name === 'TokenExpiredError') {
-    return next(new ApiError(httpStatus.UNAUTHORIZED, messageConstant.token.expired));
+    return next(new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.TOKEN_EXPIRED)));
   } else if (err instanceof ApiError) return next(err);
   return next(
     new ApiError(err.status || httpStatus.INTERNAL_SERVER_ERROR, err.message, false, err.stack)
@@ -59,7 +60,7 @@ const errorConverter = async (err, req, res, next) => {
 
 const errorHandler = (err, req, res, next) => {
   const status = err.status || httpStatus.INTERNAL_SERVER_ERROR;
-  const error = err.message || messageConstant.sthWrong;
+  const error = err.message || _t(LocaleKey.STH_WRONG);
 
   if (config.server.env === constants.mode.development) {
     console.log(err);
@@ -68,7 +69,7 @@ const errorHandler = (err, req, res, next) => {
 
   res.status(status).json({
     code: status,
-    message: messageConstant.responseStatus.error,
+    message: constants.message.error,
     data: null,
     error,
     ...(config.server.env === constants.mode.development && {
