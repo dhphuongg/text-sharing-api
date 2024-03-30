@@ -24,8 +24,8 @@ module.exports = {
     exp: process.env.OTP_EXP_MINUTES
   },
   mail: {
-    user: process.env.USER_MAIL,
-    pass: process.env.PASS_MAIL
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
   },
   redis: {
     host: process.env.REDIS_HOST,

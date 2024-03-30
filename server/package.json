@@ -1,5 +1,5 @@
 {
-  "name": "HIT-Circle-Server",
+  "name": "hit-circle-server",
   "version": "1.0.0",
   "description": "The server of a media social application",
   "main": "index.js",
@@ -7,8 +7,8 @@
   "author": "phuonghight <hoangphuong270703@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon src/index.js",
-    "start": "cross-env NODE_ENV=production node src/index.js",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "migrate": "prisma migrate dev",
     "migrate:reset": "prisma migrate reset",
     "seed": "node prisma/seed.js",
@@ -38,7 +38,6 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "nodemon": "^3.1.0",
     "prettier": "3.2.5",
     "prisma": "^5.11.0"
