@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const httpStatus = require('http-status');
 
-const { userService, followService, notificationService } = require('../services');
+const { userService, followService, notificationService, socketService } = require('../services');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
 const { getOptions } = require('../utils/getPaginationAndSort');
@@ -73,7 +73,7 @@ const follow = catchAsync(async (req, res, next) => {
   }
   const follow = await followService.createById(req.auth.id, userId);
   const notifications = await notificationService.createNotification(req.auth.id, userId);
-  _io.emit(
+  socketService.emit(
     `notifications-${userId}`,
     `${follow.followBy.username} ${messageConstant.notifyContent[notifications.event]}`
   );

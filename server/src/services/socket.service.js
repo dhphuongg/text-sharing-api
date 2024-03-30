@@ -7,4 +7,8 @@ const connection = (socket) => {
   });
 };
 
-module.exports = { connection };
+const emit = (event, ...args) => {
+  _io.emit(event, ...args);
+};
+
+module.exports = { connection, emit };

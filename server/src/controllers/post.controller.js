@@ -5,7 +5,8 @@ const {
   postMediaService,
   reactionService,
   followService,
-  notificationService
+  notificationService,
+  socketService
 } = require('../services');
 const catchAsync = require('../utils/catchAsync');
 const pick = require('../utils/pick');
@@ -34,12 +35,20 @@ const createNewPost = catchAsync(async (req, res, next) => {
       post.type,
       post.postRefId
     );
+    socketService.emit(
+      `notifications-${post.postRef.userId}`,
+      `${req.auth.username} ${messageConstant.notifyContent[post.type]}`
+    );
   } else {
     post = await postService.createNewPost(myId, content);
     // Create notification
     const followers = await followService.getAllFollowersById(myId);
     for (let i = 0; i < followers.length; i++) {
       await notificationService.createNotification(myId, followers[i].id, post.type, post.id);
+      socketService.emit(
+        `notifications-${followers[i].id}`,
+        `${req.auth.username} ${messageConstant.notifyContent[post.type]}`
+      );
     }
   }
   if (req.files) {
@@ -168,7 +177,7 @@ const likePostById = catchAsync(async (req, res, next) => {
     event,
     reaction.post.id
   );
-  _io.emit(
+  socketService.emit(
     `notifications-${reaction.post.userId}`,
     `${req.auth.username} ${messageConstant.notifyContent[notification.event]}`
   );
