@@ -7,6 +7,7 @@ const compression = require('compression');
 const { xss } = require('express-xss-sanitizer');
 const path = require('path');
 const httpStatus = require('http-status');
+const cookieParser = require('cookie-parser');
 
 const config = require('./config/config');
 const morgan = require('./config/morgan.config');
@@ -14,8 +15,9 @@ const { errorConverter, errorHandler } = require('./middlewares').error;
 const router = require('./routes/v1');
 const { messageConstant, constants } = require('./constants');
 const ApiError = require('./utils/ApiError');
-const { authSocket } = require('./middlewares');
+const { authSocket, i18nInit } = require('./middlewares');
 const { socketService } = require('./services');
+const LocaleKey = require('./locales/key.locale');
 
 const app = express();
 const httpServer = createServer(app);
@@ -53,8 +55,14 @@ app.use(express.urlencoded({ extended: true }));
 // parse json request body
 app.use(express.json());
 
+// expose cookies to req.cookies
+app.use(cookieParser());
+
+// use i18n
+app.use(i18nInit);
+
 // health check
-app.get('/~', (req, res) => res.json({ status: httpStatus.OK, message: messageConstant.healthy }));
+app.get('/~', (req, res) => res.json({ status: httpStatus.OK, message: _t(LocaleKey.HEALTHY) }));
 // api v1 routes
 app.use('/api/v1', router);
 // api not found
