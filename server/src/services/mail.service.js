@@ -6,12 +6,13 @@ const logger = require('../config/winston.config');
 
 const sendMailHelper = async (to, subject, html) => {
   const transport = nodemailer.createTransport({
-    service: 'Gmail',
+    host: config.mail.host,
+    port: config.mail.port,
     auth: config.mail
   });
 
   await transport.sendMail({
-    from: 'HIT Circle <no_reply@hit.circle.com>',
+    from: 'HIT Circle <no_reply@hit-circle.com>',
     to,
     subject,
     html

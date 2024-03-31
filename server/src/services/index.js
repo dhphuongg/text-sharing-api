@@ -1,6 +1,6 @@
 module.exports.authService = require('./auth.service');
 module.exports.userService = require('./user.service');
-module.exports.mailService = require('./mail.serive');
+module.exports.mailService = require('./mail.service');
 module.exports.otpService = require('./otp.service');
 module.exports.followService = require('./follow.service');
 module.exports.postService = require('./post.service');

@@ -9,7 +9,7 @@ const jwt = require('../utils/jwt');
 const { constants } = require('../constants');
 const userService = require('./user.service');
 const otpService = require('./otp.service');
-const mailService = require('./mail.serive');
+const mailService = require('./mail.service');
 const LocaleKey = require('../locales/key.locale');
 
 const login = async ({ email, password }) => {
