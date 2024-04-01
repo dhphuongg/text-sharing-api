@@ -1,9 +1,9 @@
 const logger = require('../config/winston.config');
 
 const connection = (socket) => {
-  logger.info('Connected socket', { label: 'socket.io' });
+  logger.info(`User ${socket.id} connected!`, { label: 'socket.io' });
   socket.on('disconnect', () => {
-    logger.info(`User disconnect id is ${socket.id}`, { label: 'socket.io' });
+    logger.info(`User ${socket.id} disconnect!`, { label: 'socket.io' });
   });
 };
 

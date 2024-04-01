@@ -182,6 +182,7 @@ const likePostById = catchAsync(async (req, res, next) => {
     `notifications-${reaction.post.userId}`,
     `${req.auth.username} ${_t(LocaleKey[`NOTIFICATION_${notification.event}`])}`
   );
+  socketService.emit(`likes-increase-${reaction.post.id}`);
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
     message: constants.message.success,
@@ -196,6 +197,7 @@ const unlikePostById = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   const reaction = await reactionService.deleteById(req.auth.id, postId);
+  socketService.emit(`likes-decrease-${reaction.postId}`);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,

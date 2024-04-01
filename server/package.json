@@ -12,8 +12,7 @@
     "migrate": "prisma migrate dev",
     "migrate:reset": "prisma migrate reset",
     "seed": "node prisma/seed.js",
-    "format": "prettier . --write",
-    "prepare": "husky"
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0",
