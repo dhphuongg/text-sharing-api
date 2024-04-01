@@ -36,4 +36,4 @@ const sendMail = (email, subject, template) => {
   mailQueue.add({ email, subject, template });
 };
 
-module.exports = { sendMail };
+module.exports = { sendMail, sendMailHelper };

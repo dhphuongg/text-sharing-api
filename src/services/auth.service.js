@@ -6,7 +6,7 @@ const path = require('path');
 const config = require('../config/config');
 const ApiError = require('../utils/ApiError');
 const jwt = require('../utils/jwt');
-const { constants } = require('../constants');
+const { constants, validationConstant } = require('../constants');
 const userService = require('./user.service');
 const otpService = require('./otp.service');
 const mailService = require('./mail.service');
@@ -41,12 +41,12 @@ const sendOtp = async (email, job) => {
   const oldOtp = await otpService.getByEmail(email);
 
   let newOtp;
-  if (job === constants.validation.otp.job.resetPassword) {
+  if (job === validationConstant.otp.job.resetPassword) {
     if (!oldOtp || !oldOtp.user) {
       throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, 'Email'));
     }
     newOtp = await otpService.updateOtpByEmail(email, job);
-  } else if (job === constants.validation.otp.job.register) {
+  } else if (job === validationConstant.otp.job.register) {
     if (oldOtp) {
       if (oldOtp.user) {
         throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.ACCOUNT_ALREADY));
@@ -58,15 +58,15 @@ const sendOtp = async (email, job) => {
   }
 
   const jobMailShow = {
-    [constants.validation.otp.job.register]: 'Register',
-    [constants.validation.otp.job.resetPassword]: 'Reset password'
+    [validationConstant.otp.job.register]: 'Register',
+    [validationConstant.otp.job.resetPassword]: 'Reset password'
   };
 
   const template = await ejs.renderFile(
     path.join(__dirname, '../templates/send-otp.template.ejs'),
     { job: jobMailShow[job], exp: config.otp.exp, otpCode: newOtp.code }
   );
-  mailService.sendMail(email, `${constants.app.name} OTP`, template);
+  mailService.sendMailHelper(email, `${constants.app.name} OTP`, template);
   return newOtp;
 };
 

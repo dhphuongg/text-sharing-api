@@ -1,3 +1,3 @@
-# HIT Circle - Social media application
+# HIT Circle Server
 
-An app for sharing text updates and joining public conversations.
+The server of a media social application: sharing text updates and joining public conversations.

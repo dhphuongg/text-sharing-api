@@ -14,12 +14,6 @@ module.exports = {
     accessExpMinutes: process.env.ACCESS_EXP_MINUTES,
     refressExpMinutes: process.env.REFRESH_EXP_MINUTES
   },
-  admin: {
-    fullName: process.env.ADMIN_FULL_NAME,
-    email: process.env.ADMIN_EMAIL,
-    username: process.env.ADMIN_USERNAME,
-    password: process.env.ADMIN_PASSWORD
-  },
   otp: {
     exp: process.env.OTP_EXP_MINUTES
   },
@@ -32,6 +26,7 @@ module.exports = {
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
+    username: process.env.REDIS_USERNAME,
     password: process.env.REDIS_PASSWORD
   }
 };
