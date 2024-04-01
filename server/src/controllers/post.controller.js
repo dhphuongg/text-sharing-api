@@ -24,7 +24,7 @@ const createNewPost = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Content or Media'));
   }
   let post;
-  if (type && type !== validationConstant.post.type.new) {
+  if (type && type !== validationConstant.postType.new) {
     if (!postRefId) {
       throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Post reference id'));
     }
@@ -168,9 +168,9 @@ const likePostById = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
   const reaction = await reactionService.create(req.auth.id, postId);
-  let event = validationConstant.event.likePost;
-  if (reaction.post.type === validationConstant.post.type.reply) {
-    event = validationConstant.event.likeReply;
+  let event = constants.event.likePost;
+  if (reaction.post.type === validationConstant.postType.reply) {
+    event = constants.event.likeReply;
   }
   const notification = await notificationService.createNotification(
     req.auth.id,

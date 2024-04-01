@@ -12,14 +12,13 @@ const changePassword = {
 
 const updateUser = {
   body: Joi.object({
-    fullName: Joi.string().optional().label(validationConstant.label.user.fullName),
+    fullName: Joi.string().optional(),
     username: Joi.string()
       .max(validationConstant.username.maxlength)
       .pattern(validationConstant.username.regex)
-      .optional()
-      .label(validationConstant.label.user.username),
+      .optional(),
     birthday: Joi.date().less('now').optional(),
-    bio: Joi.string().max(validationConstant.bio.maxLength).optional()
+    bio: Joi.string().max(validationConstant.maxContentLength).optional()
   }).options({ stripUnknown: true })
 };
 

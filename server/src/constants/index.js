@@ -1,6 +1,5 @@
 module.exports.validationConstant = require('./validation.constant');
 module.exports.constants = {
-  validation: this.validationConstant,
   app: {
     name: 'HIT Circle'
   },
@@ -26,5 +25,13 @@ module.exports.constants = {
   message: {
     success: 'SUCCESS',
     error: 'ERROR'
+  },
+  event: {
+    follow: 'FOLLOW',
+    likePost: 'LIKE_POST',
+    likeReply: 'LIKE_REPLY',
+    new: 'NEW',
+    reply: 'REPLY',
+    quote: 'QUOTE'
   }
 };

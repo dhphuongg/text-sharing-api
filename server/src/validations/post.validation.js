@@ -3,9 +3,9 @@ const { validationConstant } = require('../constants');
 
 const createNewPost = {
   body: Joi.object({
-    content: Joi.string().max(500).optional(),
+    content: Joi.string().max(validationConstant.maxContentLength).optional(),
     type: Joi.string()
-      .valid(...Object.values(validationConstant.post.type))
+      .valid(...Object.values(validationConstant.postType))
       .optional(),
     postRefId: Joi.string().uuid().optional()
   }).options({ stripUnknown: true })

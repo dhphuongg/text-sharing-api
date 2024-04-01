@@ -1,13 +1,4 @@
 module.exports = {
-  label: {
-    user: {
-      fullName: 'Full name',
-      email: 'Email',
-      username: 'Username',
-      password: 'Password'
-    },
-    otp: 'OTP'
-  },
   username: {
     regex: /^[\w](?!.*?\.{2})[\w.]{1,28}[\w]$/,
     maxlength: 30
@@ -28,6 +19,7 @@ module.exports = {
   bio: {
     maxLength: 500
   },
+  maxContentLength: 500,
   birthday: {
     min: '1900-01-01',
     max: '2018-01-01'
@@ -45,17 +37,7 @@ module.exports = {
     avatar: 'avatar',
     post_media: 'post_media'
   },
-  post: {
-    type: {
-      new: 'NEW',
-      reply: 'REPLY',
-      quote: 'QUOTE'
-    }
-  },
-  event: {
-    follow: 'FOLLOW',
-    likePost: 'LIKE_POST',
-    likeReply: 'LIKE_REPLY',
+  postType: {
     new: 'NEW',
     reply: 'REPLY',
     quote: 'QUOTE'

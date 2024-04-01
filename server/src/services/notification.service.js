@@ -1,12 +1,12 @@
-const validationConstant = require('../constants/validation.constant');
 const prisma = require('../prisma-client');
 const LocaleKey = require('../locales/key.locale');
 const locale = require('../locales/locale');
+const { constants } = require('../constants');
 
 const createNotification = async (
   actorId,
   receiverId,
-  event = validationConstant.event.follow,
+  event = constants.event.follow,
   postId = null
 ) => {
   const notification = await prisma.notification.create({
