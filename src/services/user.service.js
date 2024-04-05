@@ -39,8 +39,8 @@ const getById = async (id) => {
   return user;
 };
 
-const getByEmail = async (email) => {
-  const user = await prisma.user.findUnique({ where: { email } });
+const getByUsernameOrEmail = async (username) => {
+  const user = await prisma.user.findFirst({ where: { OR: [{ email: username }, { username }] } });
   return user;
 };
 
@@ -121,7 +121,7 @@ module.exports = {
   create,
   getFullById,
   getById,
-  getByEmail,
+  getByUsernameOrEmail,
   updatePasswordById,
   updateById,
   search

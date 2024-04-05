@@ -12,8 +12,8 @@ const otpService = require('./otp.service');
 const mailService = require('./mail.service');
 const LocaleKey = require('../locales/key.locale');
 
-const login = async ({ email, password }) => {
-  const user = await userService.getByEmail(email);
+const login = async ({ username, password }) => {
+  const user = await userService.getByUsernameOrEmail(username);
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.ACCOUNT_INCORRECT));
   }

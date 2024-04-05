@@ -7,7 +7,7 @@ const { constants, validationConstant } = require('../constants');
 const LocaleKey = require('../locales/key.locale');
 
 const login = catchAsync(async (req, res, next) => {
-  const body = pick(req.body, ['email', 'password']);
+  const body = pick(req.body, ['username', 'password']);
   const { user, accessToken, refreshToken } = await authService.login(body);
   return res.status(httpStatus.OK).json({
     code: httpStatus.OK,

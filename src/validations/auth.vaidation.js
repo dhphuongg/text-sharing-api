@@ -4,7 +4,7 @@ const { validationConstant } = require('../constants');
 const login = {
   body: Joi.object()
     .keys({
-      email: Joi.string().email().required(),
+      username: Joi.string().required(),
       password: Joi.string()
         .min(validationConstant.password.minLength)
         .pattern(validationConstant.password.regex)
