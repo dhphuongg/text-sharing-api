@@ -28,6 +28,12 @@ const getById = {
   })
 };
 
+const getByUsername = {
+  params: Joi.object({ username: Joi.string().required() }).options({
+    stripUnknown: true
+  })
+};
+
 const search = {
   query: Joi.object({
     limit: Joi.number().min(1).optional(),
@@ -36,4 +42,4 @@ const search = {
   }).options({ stripUnknown: true })
 };
 
-module.exports = { changePassword, updateUser, getById, search };
+module.exports = { changePassword, updateUser, getById, getByUsername, search };

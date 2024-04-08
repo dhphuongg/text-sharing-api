@@ -55,6 +55,21 @@ const getById = catchAsync(async (req, res, next) => {
   });
 });
 
+const getByUsername = catchAsync(async (req, res, next) => {
+  const { username } = pick(req.params, ['username']);
+  const user = await userService.getByUsername(username);
+  if (!user) {
+    return next(new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.USER))));
+  }
+  user.friendshipStatus = await followService.getFriendshipStatus(req.auth.id, user.id);
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: constants.message.success,
+    data: user,
+    error: null
+  });
+});
+
 const getProfile = catchAsync(async (req, res, next) => {
   const user = await userService.getById(req.auth.id);
   res.status(httpStatus.OK).json({
@@ -157,6 +172,7 @@ const search = catchAsync(async (req, res, next) => {
 
 module.exports = {
   getById,
+  getByUsername,
   getProfile,
   changePassword,
   updateProfile,

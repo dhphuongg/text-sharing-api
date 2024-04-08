@@ -6,7 +6,8 @@ const { userController, postController } = require('../../controllers');
 
 router
   .get('/search', validate(userValidation.search), userController.search)
-  .get('/:userId', validate(userValidation.getById), userController.getById)
+  .get('/:username', validate(userValidation.getByUsername), userController.getByUsername)
+  // .get('/:userId', validate(userValidation.getById), userController.getById)
   .get('/:userId/post', validate(postValidation.getByUserId), postController.getByUserId)
   .get('/', userController.getProfile)
   .patch('/', avtUpload, validate(userValidation.updateUser), userController.updateProfile)

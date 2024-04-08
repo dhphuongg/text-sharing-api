@@ -39,6 +39,22 @@ const getById = async (id) => {
   return user;
 };
 
+const getByUsername = async (username) => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: {
+      id: true,
+      avatar: true,
+      fullName: true,
+      username: true,
+      birthday: true,
+      bio: true,
+      _count: { select: { followers: true } }
+    }
+  });
+  return user;
+};
+
 const getByUsernameOrEmail = async (username) => {
   const user = await prisma.user.findFirst({ where: { OR: [{ email: username }, { username }] } });
   return user;
@@ -120,6 +136,7 @@ const search = async ({ keyword, limit, page }) => {
 module.exports = {
   create,
   getFullById,
+  getByUsername,
   getById,
   getByUsernameOrEmail,
   updatePasswordById,
