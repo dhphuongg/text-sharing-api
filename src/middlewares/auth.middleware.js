@@ -43,4 +43,20 @@ const authSocket = async (socket, next) => {
   }
 };
 
-module.exports = { authorize, authSocket };
+const optionalAuth = (roles = [constants.role.user]) =>
+  catchAsync(async (req, res, next) => {
+    const token = req.headers.authorization?.replace(`${bearer} `, constants.emptyString);
+    if (token) {
+      const decoded = jwt.verifyToken(token, config.jwt.secret);
+      const user = await userService.getFullById(decoded.sub);
+      if (user) {
+        if (user.role === constants.role.admin || roles.includes(user.role)) {
+          req.auth = user;
+        }
+      }
+    }
+
+    return next();
+  });
+
+module.exports = { authorize, authSocket, optionalAuth };

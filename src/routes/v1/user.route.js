@@ -1,14 +1,14 @@
 const router = require('express').Router();
 
 const { validate, avtUpload } = require('../../middlewares');
-const { userValidation, postValidation } = require('../../validations');
-const { userController, postController } = require('../../controllers');
+const { userValidation } = require('../../validations');
+const { userController } = require('../../controllers');
 
 router
-  .get('/search', validate(userValidation.search), userController.search)
-  .get('/:username', validate(userValidation.getByUsername), userController.getByUsername)
+  // .get('/search', validate(userValidation.search), userController.search)
+  // .get('/:username', validate(userValidation.getByUsername), userController.getByUsername)
   // .get('/:userId', validate(userValidation.getById), userController.getById)
-  .get('/:userId/post', validate(postValidation.getByUserId), postController.getByUserId)
+  // .get('/:userId/post', validate(postValidation.getByUserId), postController.getByUserId)
   .get('/', userController.getProfile)
   .patch('/', avtUpload, validate(userValidation.updateUser), userController.updateProfile)
   .patch('/change-password', validate(userValidation.changePassword), userController.changePassword)
