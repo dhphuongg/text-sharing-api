@@ -11,6 +11,15 @@ const createNewPost = {
   }).options({ stripUnknown: true })
 };
 
+const createReplyPost = {
+  params: Joi.object({ postId: Joi.string().uuid().required() }).options({
+    stripUnknown: true
+  }),
+  body: Joi.object({
+    content: Joi.string().max(validationConstant.maxContentLength).optional()
+  }).options({ stripUnknown: true })
+};
+
 const getById = {
   params: Joi.object({ postId: Joi.string().uuid().required() }).options({
     stripUnknown: true
@@ -63,6 +72,7 @@ const searchByContent = {
 
 module.exports = {
   createNewPost,
+  createReplyPost,
   getById,
   getRepliesById,
   getByUserId,

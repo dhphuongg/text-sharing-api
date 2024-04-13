@@ -1,6 +1,6 @@
 const prisma = require('../prisma-client');
 
-const createNewPost = async (userId, content, type, postRefId) => {
+const createPost = async (userId, content, type, postRefId) => {
   const post = await prisma.post.create({
     data: { userId, content, postRefId, type },
     include: { postRef: true }
@@ -239,7 +239,7 @@ const searchByContent = async ({ limit, page, keyword }) => {
 };
 
 module.exports = {
-  createNewPost,
+  createPost,
   getById,
   getRepliesById,
   getByUserId,

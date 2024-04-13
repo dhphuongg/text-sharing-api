@@ -11,7 +11,7 @@ router
   .get('/post/search', validate(postValidation.searchByContent), postController.searchByContent)
   .get('/post/:postId', validate(postValidation.getById), postController.getById)
   .get(
-    '/post/:postId/replies',
+    '/post/:postId/reply',
     validate(postValidation.getRepliesById),
     postController.getRepliesById
   );

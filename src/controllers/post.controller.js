@@ -18,18 +18,46 @@ const { addFriendshipStatusForPostAuthor } = require('../utils/friendshipStatus'
 const LocaleKey = require('../locales/key.locale');
 
 const createNewPost = catchAsync(async (req, res, next) => {
-  const { content, type, postRefId } = pick(req.body, ['content', 'type', 'postRefId']);
+  const { content } = pick(req.body, ['content']);
   const myId = req.auth.id;
   if (!content && !req.files) {
     throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Content or Media'));
   }
-  let post;
-  if (type && type !== validationConstant.postType.new) {
-    if (!postRefId) {
-      throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Post reference id'));
-    }
-    post = await postService.createNewPost(myId, content, type, postRefId);
-    // Create notification
+  const post = await postService.createPost(myId, content);
+  // Create notification
+  const followers = await followService.getAllFollowersById(myId);
+  for (let i = 0; i < followers.length; i++) {
+    await notificationService.createNotification(myId, followers[i].id, post.type, post.id);
+    socketService.emit(
+      `notifications-${followers[i].id}`,
+      `${req.auth.username} ${_t(LocaleKey.NOTIFICATION_NEW)}`
+    );
+  }
+  if (req.files) {
+    const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));
+    await postMediaService.createMany(post.id, mediaFileUrls);
+  }
+  res.status(httpStatus.CREATED).json({
+    code: httpStatus.CREATED,
+    message: constants.message.success,
+    data: await postService.getById(post.id),
+    error: null
+  });
+});
+
+const createReplyPost = catchAsync(async (req, res, next) => {
+  const { content } = pick(req.body, ['content']);
+  const { postId } = pick(req.params, ['postId']);
+  const myId = req.auth.id;
+  if (!content && !req.files) {
+    throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Content or Media'));
+  }
+  if (!postId) {
+    throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Post reference id'));
+  }
+  const post = await postService.createPost(myId, content, 'REPLY', postId);
+  // Create notification
+  if (!post.postRef.userId === myId) {
     await notificationService.createNotification(
       myId,
       post.postRef.userId,
@@ -38,19 +66,8 @@ const createNewPost = catchAsync(async (req, res, next) => {
     );
     socketService.emit(
       `notifications-${post.postRef.userId}`,
-      `${req.auth.username} ${_t(LocaleKey[`NOTIFICATION_${post.type}`])}`
+      `${req.auth.username} ${_t(LocaleKey.NOTIFICATION_REPLY)}`
     );
-  } else {
-    post = await postService.createNewPost(myId, content);
-    // Create notification
-    const followers = await followService.getAllFollowersById(myId);
-    for (let i = 0; i < followers.length; i++) {
-      await notificationService.createNotification(myId, followers[i].id, post.type, post.id);
-      socketService.emit(
-        `notifications-${followers[i].id}`,
-        `${req.auth.username} ${_t(LocaleKey[`NOTIFICATION_${post.type}`])}`
-      );
-    }
   }
   if (req.files) {
     const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));
@@ -88,7 +105,7 @@ const getRepliesById = catchAsync(async (req, res, next) => {
     sortBy
   });
   for (let i = 0; i < replies.length; i++) {
-    await addFriendshipStatusForPostAuthor(req.auth.id, replies[i]);
+    await addFriendshipStatusForPostAuthor(req.auth?.id, replies[i]);
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
@@ -265,6 +282,7 @@ const searchByContent = catchAsync(async (req, res, next) => {
 
 module.exports = {
   createNewPost,
+  createReplyPost,
   getById,
   getRepliesById,
   getByUserId,
