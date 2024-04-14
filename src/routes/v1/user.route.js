@@ -5,10 +5,7 @@ const { userValidation } = require('../../validations');
 const { userController } = require('../../controllers');
 
 router
-  // .get('/search', validate(userValidation.search), userController.search)
-  // .get('/:username', validate(userValidation.getByUsername), userController.getByUsername)
-  // .get('/:userId', validate(userValidation.getById), userController.getById)
-  // .get('/:userId/post', validate(postValidation.getByUserId), postController.getByUserId)
+  .get('/search', validate(userValidation.search), userController.search)
   .get('/', userController.getProfile)
   .patch('/', avtUpload, validate(userValidation.updateUser), userController.updateProfile)
   .patch('/change-password', validate(userValidation.changePassword), userController.changePassword)
