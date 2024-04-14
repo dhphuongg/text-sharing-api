@@ -61,7 +61,7 @@ const getByUsername = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.USER))));
   }
-  user.friendshipStatus = await followService.getFriendshipStatus(req.auth.id, user.id);
+  user.friendshipStatus = await followService.getFriendshipStatus(req.auth?.id, user.id);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,

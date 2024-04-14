@@ -87,7 +87,7 @@ const getById = catchAsync(async (req, res, next) => {
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
-  await addFriendshipStatusForPostAuthor(req.auth.id, post);
+  await addFriendshipStatusForPostAuthor(req.auth?.id, post);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
@@ -129,7 +129,7 @@ const getByUserId = catchAsync(async (req, res, next) => {
     page
   });
   for (let i = 0; i < posts.length; i++) {
-    await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+    await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
