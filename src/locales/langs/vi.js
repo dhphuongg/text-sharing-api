@@ -33,7 +33,7 @@ module.exports = {
   [LocaleKey.NOTIFICATION_LIKE_REPLY]: 'đã thích trả lời của bạn.',
   [LocaleKey.NOTIFICATION_NEW]: 'đã tạo bài viết mới.',
   [LocaleKey.NOTIFICATION_REPLY]: 'đã trả lời bạn.',
-  [LocaleKey.NOTIFICATION_QUOTE]: 'đã trích dẫn bài viết của bạn.',
+  [LocaleKey.NOTIFICATION_REPOST]: 'đã đăng lại bài viết của bạn.',
   [LocaleKey.NOT_FOUND]: '%s không tồn tại!',
   [LocaleKey.REQUIRED]: '%s được yêu cầu bắt buộc!',
   [LocaleKey.ALREADY]: '%s đã tồn tại!',

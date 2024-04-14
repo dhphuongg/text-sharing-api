@@ -32,6 +32,6 @@ module.exports.constants = {
     likeReply: 'LIKE_REPLY',
     new: 'NEW',
     reply: 'REPLY',
-    quote: 'QUOTE'
+    repost: 'REPOST'
   }
 };

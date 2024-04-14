@@ -40,6 +40,6 @@ module.exports = {
   postType: {
     new: 'NEW',
     reply: 'REPLY',
-    quote: 'QUOTE'
+    repost: 'REPOST'
   }
 };

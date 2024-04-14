@@ -73,7 +73,7 @@ model Follow {
 enum PostType {
   NEW
   REPLY
-  QUOTE
+  REPOST
 }
 
 model PostMedia {
@@ -125,7 +125,7 @@ enum Event {
   LIKE_REPLY
   NEW
   REPLY
-  QUOTE
+  REPOST
 }
 
 model Notification {

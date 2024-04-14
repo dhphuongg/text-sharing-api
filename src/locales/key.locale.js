@@ -29,7 +29,7 @@ module.exports = {
   NOTIFICATION_LIKE_REPLY: 'notification-like-reply',
   NOTIFICATION_NEW: 'notification-new',
   NOTIFICATION_REPLY: 'notification-reply',
-  NOTIFICATION_QUOTE: 'notification-quote',
+  NOTIFICATION_REPOST: 'notification-repost',
   NOT_FOUND: 'not-found',
   REQUIRED: 'required',
   ALREADY: 'already',

@@ -34,7 +34,7 @@ module.exports = {
   [LocaleKey.NOTIFICATION_LIKE_REPLY]: 'liked your reply.',
   [LocaleKey.NOTIFICATION_NEW]: 'created new post.',
   [LocaleKey.NOTIFICATION_REPLY]: 'reply you.',
-  [LocaleKey.NOTIFICATION_QUOTE]: 'quote your post.',
+  [LocaleKey.NOTIFICATION_REPOST]: 'shared your post.',
   [LocaleKey.NOT_FOUND]: '%s is not found!',
   [LocaleKey.REQUIRED]: '%s is required!',
   [LocaleKey.ALREADY]: '%s is already!',
