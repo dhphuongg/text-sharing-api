@@ -5,8 +5,6 @@ const { postValidation } = require('../../validations');
 const router = require('express').Router();
 
 router
-  .get('/liked', postController.getMyLikedPosts)
-  .get('/search', validate(postValidation.searchByContent), postController.searchByContent)
   .post(
     '/:postId/reply',
     postMediaUpload,

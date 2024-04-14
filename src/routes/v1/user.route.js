@@ -5,7 +5,6 @@ const { userValidation } = require('../../validations');
 const { userController } = require('../../controllers');
 
 router
-  .get('/search', validate(userValidation.search), userController.search)
   .get('/', userController.getProfile)
   .patch('/', avtUpload, validate(userValidation.updateUser), userController.updateProfile)
   .patch('/change-password', validate(userValidation.changePassword), userController.changePassword)
