@@ -8,7 +8,7 @@ const notificationRouter = require('./notification.route');
 const { authorize, optionalAuth } = require('../../middlewares');
 const { constants } = require('../../constants');
 
-router.use('/', optionalAuth([constants.role.user]), optionalRoute);
+router.use('/', optionalAuth, optionalRoute);
 router.use('/auth', authRouter);
 router.use('/user', authorize([constants.role.user]), userRouter);
 router.use('/post', authorize([constants.role.user]), postRouter);
