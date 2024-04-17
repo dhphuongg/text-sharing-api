@@ -87,7 +87,7 @@ const getById = catchAsync(async (req, res, next) => {
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
-  await addFriendshipStatusForPostAuthor(req.auth?.id, post);
+  req.auth && (await addFriendshipStatusForPostAuthor(req.auth.id, post));
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
@@ -104,9 +104,10 @@ const getRepliesByPostId = catchAsync(async (req, res, next) => {
     page,
     sortBy
   });
-  for (let i = 0; i < replies.length; i++) {
-    await addFriendshipStatusForPostAuthor(req.auth?.id, replies[i]);
-  }
+  if (req.auth)
+    for (let i = 0; i < replies.length; i++) {
+      await addFriendshipStatusForPostAuthor(req.auth.id, replies[i]);
+    }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
@@ -130,7 +131,7 @@ const getByUsername = catchAsync(async (req, res, next) => {
   });
   if (req.auth)
     for (let i = 0; i < posts.length; i++) {
-      await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
+      await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
     }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
@@ -270,9 +271,10 @@ const searchByContent = catchAsync(async (req, res, next) => {
     page,
     keyword
   });
-  for (let i = 0; i < posts.length; i++) {
-    await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
-  }
+  if (req.auth)
+    for (let i = 0; i < posts.length; i++) {
+      await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+    }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,

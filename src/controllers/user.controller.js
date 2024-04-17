@@ -61,7 +61,8 @@ const getByUsername = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.USER))));
   }
-  user.friendshipStatus = await followService.getFriendshipStatus(req.auth?.id, user.id);
+  if (req.auth)
+    user.friendshipStatus = await followService.getFriendshipStatus(req.auth.id, user.id);
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
@@ -158,10 +159,11 @@ const getFollowingById = catchAsync(async (req, res, next) => {
 const search = catchAsync(async (req, res, next) => {
   const { limit, page, keyword } = getOptions(req.query);
   const { users, total } = await userService.search({ limit, page, keyword });
-  for (let i = 0; i < users.length; i++) {
-    const user = users[i];
-    user.friendshipStatus = await followService.getFriendshipStatus(req.auth?.id, user.id);
-  }
+  if (req.auth)
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      user.friendshipStatus = await followService.getFriendshipStatus(req.auth.id, user.id);
+    }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
