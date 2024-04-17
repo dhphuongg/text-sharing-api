@@ -238,6 +238,14 @@ const searchByContent = async ({ limit, page, keyword }) => {
   return { posts, total };
 };
 
+const getLikeStatus = async (userId, postId) => {
+  if (!userId) return false;
+  const likeStatus = await prisma.post.findUnique({
+    where: { id: postId, likers: { some: { userId } } }
+  });
+  return !!likeStatus;
+};
+
 module.exports = {
   createPost,
   getById,
@@ -245,5 +253,6 @@ module.exports = {
   getNewByUsername,
   editContentById,
   deleteById,
-  searchByContent
+  searchByContent,
+  getLikeStatus
 };

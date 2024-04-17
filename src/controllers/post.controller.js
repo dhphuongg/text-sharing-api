@@ -87,7 +87,10 @@ const getById = catchAsync(async (req, res, next) => {
   if (!post) {
     throw new ApiError(httpStatus.NOT_FOUND, _t(LocaleKey.NOT_FOUND, _t(LocaleKey.POST)));
   }
-  req.auth && (await addFriendshipStatusForPostAuthor(req.auth.id, post));
+  if (req.auth) {
+    await addFriendshipStatusForPostAuthor(req.auth.id, post);
+    post.isLike = await postService.getLikeStatus(req.auth.id, post.id);
+  }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
@@ -132,6 +135,7 @@ const getByUsername = catchAsync(async (req, res, next) => {
   if (req.auth)
     for (let i = 0; i < posts.length; i++) {
       await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+      posts[i].isLike = await postService.getLikeStatus(req.auth.id, posts[i].id);
     }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
@@ -234,6 +238,7 @@ const getMyLikedPosts = catchAsync(async (req, res, next) => {
   });
   for (let i = 0; i < posts.length; i++) {
     await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+    posts[i].isLike = await postService.getLikeStatus(req.auth.id, posts[i].id);
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
