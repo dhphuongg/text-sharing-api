@@ -26,8 +26,8 @@ enum OtpJob {
 
 model Otp {
   id        String   @id @default(uuid())
-  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  updateAt  DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.DateTime(0)
   email     String   @unique
   code      Int
   job       OtpJob?
@@ -37,8 +37,8 @@ model Otp {
 
 model User {
   id            String         @id @default(uuid())
-  createdAt     DateTime       @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  updateAt      DateTime       @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
   fullName      String         @map("full_name")
   email         String         @unique
   username      String         @unique @db.VarChar(30)
@@ -60,7 +60,7 @@ model User {
 }
 
 model Follow {
-  createdAt   DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  createdAt   DateTime @default(now()) @map("created_at") @db.DateTime(0)
   followById  String   @map("follower_by_id")
   followBy    User     @relation(name: "following", fields: [followById], references: [id], onDelete: Cascade)
   followingId String   @map("following_id")
@@ -78,8 +78,8 @@ enum PostType {
 
 model PostMedia {
   id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  updateAt     DateTime @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
+  createdAt    DateTime @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.DateTime(0)
   mediaFileUrl String   @map("media_file_url")
   postId       String   @map("post_id")
   post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -89,8 +89,8 @@ model PostMedia {
 
 model Post {
   id            String         @id @default(uuid())
-  createdAt     DateTime       @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
-  updateAt      DateTime       @default(dbgenerated("NOW() ON UPDATE NOW()")) @map("update_at") @db.DateTime(0)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
   content       String?        @db.VarChar(500)
   media         PostMedia[]
   type          PostType       @default(NEW)
@@ -109,7 +109,7 @@ model Post {
 }
 
 model Reation {
-  createdAt DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
   postId    String   @map("post_id")
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
@@ -130,7 +130,7 @@ enum Event {
 
 model Notification {
   id         String   @id @default(uuid())
-  createdAt  DateTime @default(dbgenerated("NOW()")) @map("created_at") @db.DateTime(0)
+  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(0)
   receiverId String
   receiver   User     @relation(name: "notification", fields: [receiverId], references: [id])
   actorId    String
