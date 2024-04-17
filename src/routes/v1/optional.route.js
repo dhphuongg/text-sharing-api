@@ -13,7 +13,7 @@ router
     userController.search
   )
   .get('/user/:username', validate(userValidation.getByUsername), userController.getByUsername)
-  .get('/user/:userId/post', validate(postValidation.getByUserId), postController.getByUserId)
+  .get('/user/:username/post', validate(userValidation.getByUsername), postController.getByUsername)
   .get('/post/liked', authorize([constants.role.user]), postController.getMyLikedPosts)
   .get(
     '/post/search',
@@ -25,7 +25,7 @@ router
   .get(
     '/post/:postId/reply',
     validate(postValidation.getRepliesById),
-    postController.getRepliesById
+    postController.getRepliesByPostId
   );
 
 module.exports = router;

@@ -51,7 +51,7 @@ const getById = async (id) => {
   return post;
 };
 
-const getRepliesById = async (id, { limit, page, sortBy }) => {
+const getRepliesByPostId = async (id, { limit, page, sortBy }) => {
   const [replies, total] = await prisma.$transaction([
     prisma.post.findMany({
       where: { type: 'REPLY', postRefId: id },
@@ -80,10 +80,10 @@ const getRepliesById = async (id, { limit, page, sortBy }) => {
   return { replies, total };
 };
 
-const getByUserId = async (userId, { limit, page }) => {
+const getNewByUsername = async (username, { limit, page }) => {
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({
-      where: { userId },
+      where: { user: { username }, type: 'NEW' },
       select: {
         id: true,
         createdAt: true,
@@ -124,7 +124,7 @@ const getByUserId = async (userId, { limit, page }) => {
       skip: (page - 1) * limit,
       orderBy: { createdAt: 'desc' }
     }),
-    prisma.post.count({ where: { userId } })
+    prisma.post.count({ where: { user: { username }, type: 'NEW' } })
   ]);
   return { posts, total };
 };
@@ -241,8 +241,8 @@ const searchByContent = async ({ limit, page, keyword }) => {
 module.exports = {
   createPost,
   getById,
-  getRepliesById,
-  getByUserId,
+  getRepliesByPostId,
+  getNewByUsername,
   editContentById,
   deleteById,
   searchByContent

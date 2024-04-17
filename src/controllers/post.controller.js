@@ -96,10 +96,10 @@ const getById = catchAsync(async (req, res, next) => {
   });
 });
 
-const getRepliesById = catchAsync(async (req, res, next) => {
+const getRepliesByPostId = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   const { limit, page, sortBy } = getOptions(req.query);
-  const { replies, total } = await postService.getRepliesById(postId, {
+  const { replies, total } = await postService.getRepliesByPostId(postId, {
     limit,
     page,
     sortBy
@@ -121,20 +121,21 @@ const getRepliesById = catchAsync(async (req, res, next) => {
   });
 });
 
-const getByUserId = catchAsync(async (req, res, next) => {
-  const { userId } = pick(req.params, ['userId']);
-  const { limit, page } = getOptions(req.query);
-  const { posts, total } = await postService.getByUserId(userId, {
+const getByUsername = catchAsync(async (req, res, next) => {
+  const { username } = pick(req.params, ['username']);
+  const { limit, page, sortBy } = getOptions(req.query);
+  const { posts, total } = await postService.getNewByUsername(username, {
     limit,
     page
   });
-  for (let i = 0; i < posts.length; i++) {
-    await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
-  }
+  if (req.auth)
+    for (let i = 0; i < posts.length; i++) {
+      await addFriendshipStatusForPostAuthor(req.auth?.id, posts[i]);
+    }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
     message: constants.message.success,
-    data: { posts, limit, page, total },
+    data: { posts, limit, page, total, sortBy },
     error: null
   });
 });
@@ -284,8 +285,8 @@ module.exports = {
   createNewPost,
   createReplyPost,
   getById,
-  getRepliesById,
-  getByUserId,
+  getRepliesByPostId,
+  getByUsername,
   editContentById,
   deleteById,
   likePostById,
