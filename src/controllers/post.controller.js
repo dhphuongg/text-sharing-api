@@ -24,6 +24,13 @@ const createNewPost = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Content or Media'));
   }
   const post = await postService.createPost(myId, content);
+  if (req.files) {
+    const media = req.files.map((file) => ({
+      url: file.path.replace(/\\/g, '/'),
+      type: file.mimetype.split('/')[0]
+    }));
+    await postMediaService.createMany(post.id, media);
+  }
   // Create notification
   const followers = await followService.getAllFollowersById(myId);
   for (let i = 0; i < followers.length; i++) {
@@ -32,10 +39,6 @@ const createNewPost = catchAsync(async (req, res, next) => {
       `notifications-${followers[i].id}`,
       `${req.auth.username} ${_t(LocaleKey.NOTIFICATION_NEW)}`
     );
-  }
-  if (req.files) {
-    const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));
-    await postMediaService.createMany(post.id, mediaFileUrls);
   }
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,
@@ -56,6 +59,13 @@ const createReplyPost = catchAsync(async (req, res, next) => {
     throw new ApiError(httpStatus.BAD_REQUEST, _t(LocaleKey.REQUIRED, 'Post reference id'));
   }
   const post = await postService.createPost(myId, content, 'REPLY', postId);
+  if (req.files) {
+    const media = req.files.map((file) => ({
+      url: file.path.replace(/\\/g, '/'),
+      type: file.mimetype.split('/')[0]
+    }));
+    await postMediaService.createMany(post.id, media);
+  }
   // Create notification
   if (!post.postRef.userId === myId) {
     await notificationService.createNotification(
@@ -68,10 +78,6 @@ const createReplyPost = catchAsync(async (req, res, next) => {
       `notifications-${post.postRef.userId}`,
       `${req.auth.username} ${_t(LocaleKey.NOTIFICATION_REPLY)}`
     );
-  }
-  if (req.files) {
-    const mediaFileUrls = req.files.map((file) => file.path.replace(/\\/g, '/'));
-    await postMediaService.createMany(post.id, mediaFileUrls);
   }
   res.status(httpStatus.CREATED).json({
     code: httpStatus.CREATED,

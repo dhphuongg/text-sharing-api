@@ -27,7 +27,7 @@ enum OtpJob {
 model Otp {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt  DateTime @updatedAt @map("updated_at") @db.DateTime(0)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(0)
   email     String   @unique
   code      Int
   job       OtpJob?
@@ -38,7 +38,7 @@ model Otp {
 model User {
   id            String         @id @default(uuid())
   createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt      DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
   fullName      String         @map("full_name")
   email         String         @unique
   username      String         @unique @db.VarChar(30)
@@ -77,12 +77,13 @@ enum PostType {
 }
 
 model PostMedia {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.DateTime(0)
-  mediaFileUrl String   @map("media_file_url")
-  postId       String   @map("post_id")
-  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.DateTime(0)
+  url       String        
+  type      String
+  postId    String        @map("post_id")
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@map("post_media")
 }
@@ -90,7 +91,7 @@ model PostMedia {
 model Post {
   id            String         @id @default(uuid())
   createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt      DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
   content       String?        @db.VarChar(500)
   media         PostMedia[]
   type          PostType       @default(NEW)

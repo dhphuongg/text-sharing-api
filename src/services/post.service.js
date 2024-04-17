@@ -16,7 +16,7 @@ const getById = async (id) => {
       createdAt: true,
       content: true,
       type: true,
-      media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+      media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
       user: {
         select: {
           id: true,
@@ -32,7 +32,7 @@ const getById = async (id) => {
           createdAt: true,
           content: true,
           type: true,
-          media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+          media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
           user: {
             select: {
               id: true,
@@ -59,7 +59,7 @@ const getRepliesByPostId = async (id, { limit, page, sortBy }) => {
         id: true,
         createdAt: true,
         content: true,
-        media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+        media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
         user: {
           select: {
             id: true,
@@ -89,7 +89,7 @@ const getNewByUsername = async (username, { limit, page }) => {
         createdAt: true,
         content: true,
         type: true,
-        media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+        media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
         user: {
           select: {
             id: true,
@@ -105,7 +105,7 @@ const getNewByUsername = async (username, { limit, page }) => {
             createdAt: true,
             content: true,
             type: true,
-            media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+            media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
             user: {
               select: {
                 id: true,
@@ -138,7 +138,7 @@ const editContentById = async (id, content) => {
       createdAt: true,
       content: true,
       type: true,
-      media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+      media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
       user: {
         select: {
           id: true,
@@ -154,7 +154,7 @@ const editContentById = async (id, content) => {
           createdAt: true,
           content: true,
           type: true,
-          media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+          media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
           user: {
             select: {
               id: true,
@@ -193,7 +193,7 @@ const searchByContent = async ({ limit, page, keyword }) => {
         createdAt: true,
         content: true,
         type: true,
-        media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+        media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
         user: {
           select: {
             id: true,
@@ -209,7 +209,7 @@ const searchByContent = async ({ limit, page, keyword }) => {
             createdAt: true,
             content: true,
             type: true,
-            media: { select: { mediaFileUrl: true }, orderBy: { id: 'asc' } },
+            media: { select: { url: true, type: true }, orderBy: { id: 'asc' } },
             user: {
               select: {
                 id: true,
