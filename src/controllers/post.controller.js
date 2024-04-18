@@ -181,7 +181,7 @@ const deleteById = catchAsync(async (req, res, next) => {
   }
   await postService.deleteById(postId);
   for (let i = 0; i < post.media.length; i++) {
-    await destroyFileByPath(post.media[i].mediaFileUrl);
+    await destroyFileByPath(post.media[i].url);
   }
   res.status(httpStatus.OK).json({
     code: httpStatus.OK,
