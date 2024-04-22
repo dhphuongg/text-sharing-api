@@ -74,4 +74,13 @@ const resetPassword = async (userId, password) => {
   return await userService.updatePasswordById(userId, password);
 };
 
-module.exports = { login, register, sendOtp, resetPassword };
+const refreshToken = async (token) => {
+  const decode = jwt.verifyToken(token);
+  if (!decode.type === constants.tokenType.refresh) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'where is refresh token?');
+  }
+  const accessToken = jwt.generateToken(decode.sub, constants.tokenType.access);
+  return { user: await userService.getById(decode.sub), accessToken };
+};
+
+module.exports = { login, register, sendOtp, resetPassword, refreshToken };

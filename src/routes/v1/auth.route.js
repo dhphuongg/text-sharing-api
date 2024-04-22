@@ -8,6 +8,7 @@ router
   .post('/login', validate(authValidation.login), authController.login)
   .get('/send-otp', validate(authValidation.sendOtp), authController.sendOtp)
   .post('/register', validate(authValidation.register), authController.register)
-  .post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+  .post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword)
+  .post('/refresh-token', validate(authValidation.refreshToken), authController.refreshToken);
 
 module.exports = router;

@@ -53,4 +53,15 @@ const resetPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-module.exports = { login, register, sendOtp, resetPassword };
+const refreshToken = catchAsync(async (req, res, next) => {
+  const { refreshToken } = pick(req.body, ['refreshToken']);
+  const { user, accessToken } = await authService.refreshToken(refreshToken);
+  return res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: constants.message.success,
+    data: { user, accessToken, refreshToken },
+    error: null
+  });
+});
+
+module.exports = { login, register, sendOtp, resetPassword, refreshToken };

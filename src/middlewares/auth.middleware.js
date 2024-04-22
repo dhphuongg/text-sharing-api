@@ -16,7 +16,7 @@ const authorize = (roles = [constants.role.user]) =>
       return next(new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.REQUIRED, 'Token')));
     }
 
-    const decoded = jwt.verifyToken(token, config.jwt.secret);
+    const decoded = jwt.verifyToken(token);
     const user = await userService.getFullById(decoded.sub);
     if (!user) return next(new ApiError(httpStatus.UNAUTHORIZED, _t(LocaleKey.TOKEN_INVALID)));
     if (user.role !== constants.role.admin && !roles.includes(user.role))

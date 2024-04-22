@@ -61,4 +61,10 @@ const resetPassword = {
     .options({ stripUnknown: true })
 };
 
-module.exports = { login, register, sendOtp, resetPassword };
+const refreshToken = {
+  body: Joi.object({
+    refreshToken: Joi.string().required()
+  }).options({ stripUnknown: true })
+};
+
+module.exports = { login, register, sendOtp, resetPassword, refreshToken };

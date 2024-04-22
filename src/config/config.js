@@ -11,11 +11,11 @@ module.exports = {
   jwt: {
     secret: process.env.SECRET,
     salt: process.env.SALT,
-    accessExpMinutes: process.env.ACCESS_EXP_MINUTES,
-    refressExpMinutes: process.env.REFRESH_EXP_MINUTES
+    accessExpMinutes: process.env.ACCESS_EXP_MIN,
+    refressExpMinutes: process.env.REFRESH_EXP_MIN
   },
   otp: {
-    exp: process.env.OTP_EXP_MINUTES
+    exp: process.env.OTP_EXP_MIN
   },
   mail: {
     host: process.env.MAIL_HOST,
