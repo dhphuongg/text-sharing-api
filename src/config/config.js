@@ -12,7 +12,7 @@ module.exports = {
     secret: process.env.SECRET,
     salt: process.env.SALT,
     accessExpMinutes: process.env.ACCESS_EXP_MIN,
-    refressExpMinutes: process.env.REFRESH_EXP_MIN
+    refreshExpMinutes: process.env.REFRESH_EXP_MIN
   },
   otp: {
     exp: process.env.OTP_EXP_MIN

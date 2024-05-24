@@ -10,7 +10,7 @@ module.exports = {
   [LocaleKey.PASSWORD_INVALID]: 'Unsatisfactory password!',
   [LocaleKey.PASSWORD_INCORRECT]: 'Incorrect password!',
   [LocaleKey.PASSWORD_RESET_SUCCESS]: 'Reset password successful!',
-  [LocaleKey.PASSWORD_CHANGE_SUCCESS]: 'Change password successfull!',
+  [LocaleKey.PASSWORD_CHANGE_SUCCESS]: 'Change password successful!',
   [LocaleKey.USERNAME_INVALID]: 'Unsatisfactory username!',
   [LocaleKey.POST_MEDIA_INVALID]:
     'Invalid media file. Only support .jfif, .pjpeg, .pjp, .jpeg, .jpg, .png, .heic, .mov, .mv4, .mp4 file!',

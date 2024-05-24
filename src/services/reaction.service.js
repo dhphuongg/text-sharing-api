@@ -1,7 +1,7 @@
 const prisma = require('../prisma-client');
 
 const create = async (userId, postId) => {
-  const reaction = await prisma.reation.create({
+  const reaction = await prisma.reaction.create({
     data: { userId, postId },
     select: {
       createdAt: true,
@@ -13,7 +13,7 @@ const create = async (userId, postId) => {
 };
 
 const deleteById = async (userId, postId) => {
-  const reaction = await prisma.reation.delete({
+  const reaction = await prisma.reaction.delete({
     where: { postId_userId: { postId, userId } }
   });
   return reaction;
@@ -21,7 +21,7 @@ const deleteById = async (userId, postId) => {
 
 const getPostsByLikerId = async (userId, { limit, page }) => {
   const [reactions, total] = await prisma.$transaction([
-    prisma.reation.findMany({
+    prisma.reaction.findMany({
       where: { userId },
       select: {
         post: {
@@ -70,14 +70,14 @@ const getPostsByLikerId = async (userId, { limit, page }) => {
       skip: (page - 1) * limit,
       orderBy: { createdAt: 'desc' }
     }),
-    prisma.reation.count({ where: { userId } })
+    prisma.reaction.count({ where: { userId } })
   ]);
   return { posts: reactions.map((r) => r.post), total };
 };
 
 const getLikersByPostId = async (postId, { limit, page }) => {
   const [reactions, total] = await prisma.$transaction([
-    prisma.reation.findMany({
+    prisma.reaction.findMany({
       where: { postId },
       select: {
         user: {
@@ -94,7 +94,7 @@ const getLikersByPostId = async (postId, { limit, page }) => {
       skip: (page - 1) * limit,
       orderBy: { createdAt: 'desc' }
     }),
-    prisma.reation.count({ where: { postId } })
+    prisma.reaction.count({ where: { postId } })
   ]);
   return { users: reactions.map((r) => r.user), total };
 };

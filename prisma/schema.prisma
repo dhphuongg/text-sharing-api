@@ -50,9 +50,9 @@ model User {
   followers     Follow[]       @relation(name: "follower")
   following     Follow[]       @relation(name: "following")
   posts         Post[]
-  postsLiked    Reation[]
+  postsLiked    Reaction[]
   otp           Otp            @relation(fields: [email], references: [email])
-  notifiactions Notification[] @relation(name: "notification")
+  notifications Notification[] @relation(name: "notification")
   activities    Notification[] @relation(name: "activity")
 
   @@fulltext([fullName, username])
@@ -102,14 +102,14 @@ model Post {
   // post reference
   postRefId     String?        @map("post_ref_id")
   postRef       Post?          @relation(name: "PostReplies", fields: [postRefId], references: [id], onDelete: SetNull)
-  likers        Reation[]
+  likers        Reaction[]
   notifications Notification[]
 
   @@fulltext([content])
   @@map("posts")
 }
 
-model Reation {
+model Reaction {
   createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
   postId    String   @map("post_id")
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)

@@ -7,7 +7,7 @@ const generateToken = (sub, type) => {
   const exp =
     type === constants.tokenType.access
       ? config.jwt.accessExpMinutes
-      : config.jwt.refressExpMinutes;
+      : config.jwt.refreshExpMinutes;
   return jwt.sign({ sub, type }, config.jwt.secret, { expiresIn: `${exp}m` });
 };
 
