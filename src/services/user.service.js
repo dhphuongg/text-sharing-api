@@ -3,18 +3,20 @@ const bcrypt = require('bcrypt');
 const prisma = require('../prisma-client');
 const { constants } = require('../constants');
 
+const selectUser = {
+  id: true,
+  avatar: true,
+  fullName: true,
+  username: true,
+  birthday: true,
+  bio: true,
+  _count: { select: { followers: true, following: true } }
+};
+
 const create = async ({ fullName, email, username, password }) => {
   const user = await prisma.user.create({
     data: { fullName, email, username, password },
-    select: {
-      id: true,
-      avatar: true,
-      fullName: true,
-      username: true,
-      birthday: true,
-      bio: true,
-      _count: { select: { followers: true } }
-    }
+    select: selectUser
   });
   return user;
 };
@@ -26,15 +28,7 @@ const getFullById = async (id) => {
 const getById = async (id) => {
   const user = await prisma.user.findUnique({
     where: { id },
-    select: {
-      id: true,
-      avatar: true,
-      fullName: true,
-      username: true,
-      birthday: true,
-      bio: true,
-      _count: { select: { followers: true } }
-    }
+    select: selectUser
   });
   return user;
 };
@@ -42,15 +36,7 @@ const getById = async (id) => {
 const getByUsername = async (username) => {
   const user = await prisma.user.findUnique({
     where: { username },
-    select: {
-      id: true,
-      avatar: true,
-      fullName: true,
-      username: true,
-      birthday: true,
-      bio: true,
-      _count: { select: { followers: true } }
-    }
+    select: selectUser
   });
   return user;
 };
@@ -65,15 +51,7 @@ const updatePasswordById = async (id, password) => {
   const user = await prisma.user.update({
     where: { id },
     data: { password },
-    select: {
-      id: true,
-      avatar: true,
-      fullName: true,
-      username: true,
-      birthday: true,
-      bio: true,
-      _count: { select: { followers: true } }
-    }
+    select: selectUser
   });
   return user;
 };
@@ -83,15 +61,7 @@ const updateById = async (id, data) => {
   const user = await prisma.user.update({
     where: { id },
     data,
-    select: {
-      id: true,
-      avatar: true,
-      fullName: true,
-      username: true,
-      birthday: true,
-      bio: true,
-      _count: { select: { followers: true } }
-    }
+    select: selectUser
   });
   return user;
 };
@@ -107,15 +77,7 @@ const search = async ({ keyword, limit, page }) => {
           { fullName: { contains: keyword } }
         ]
       },
-      select: {
-        id: true,
-        avatar: true,
-        fullName: true,
-        username: true,
-        birthday: true,
-        bio: true,
-        _count: { select: { followers: true } }
-      },
+      select: selectUser,
       take: limit,
       skip: (page - 1) * limit
     }),
