@@ -8,12 +8,12 @@ const logger = require('./config/winston.config');
 prisma
   .$connect()
   .then(async () => {
-    logger.info('✅ MySQL Database is connected');
+    logger.info('✅ PostgreSQL Database is connected');
     app.listen(config.server.port, () => {
       logger.info(`✨ ${config.server.name} is running at http://localhost:${config.server.port}`);
     });
   })
   .catch((error) => {
-    logger.error('❌ Connect to MySQL Database is failed');
+    logger.error('❌ Connect to PostgreSQL Database is failed');
     logger.error(error);
   });

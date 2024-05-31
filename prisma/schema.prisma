@@ -6,11 +6,11 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -26,19 +26,21 @@ enum OtpJob {
 
 model Otp {
   id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.DateTime(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
   email     String   @unique
   code      Int
   job       OtpJob?
   user      User?
   deletedAt DateTime @map("deleted_at")
+
+  @@map("otp")
 }
 
 model User {
   id            String         @id @default(uuid())
-  createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt     DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz()
   fullName      String         @map("full_name")
   email         String         @unique
   username      String         @unique @db.VarChar(30)
@@ -55,12 +57,11 @@ model User {
   notifications Notification[] @relation(name: "notification")
   activities    Notification[] @relation(name: "activity")
 
-  @@fulltext([fullName, username])
   @@map("users")
 }
 
 model Follow {
-  createdAt   DateTime @default(now()) @map("created_at") @db.DateTime(0)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
   followById  String   @map("follower_by_id")
   followBy    User     @relation(name: "following", fields: [followById], references: [id], onDelete: Cascade)
   followingId String   @map("following_id")
@@ -78,8 +79,8 @@ enum PostType {
 
 model PostMedia {
   id        Int           @id @default(autoincrement())
-  createdAt DateTime      @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt DateTime      @updatedAt @map("updated_at") @db.DateTime(0)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
   url       String        
   type      String
   postId    String        @map("post_id")
@@ -90,8 +91,8 @@ model PostMedia {
 
 model Post {
   id            String         @id @default(uuid())
-  createdAt     DateTime       @default(now()) @map("created_at") @db.DateTime(0)
-  updatedAt     DateTime       @updatedAt @map("updated_at") @db.DateTime(0)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz()
   content       String?        @db.VarChar(500)
   media         PostMedia[]
   type          PostType       @default(NEW)
@@ -105,12 +106,11 @@ model Post {
   likers        Reaction[]
   notifications Notification[]
 
-  @@fulltext([content])
   @@map("posts")
 }
 
 model Reaction {
-  createdAt DateTime @default(now()) @map("created_at") @db.DateTime(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   postId    String   @map("post_id")
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   userId    String   @map("user_id")
@@ -131,7 +131,7 @@ enum Event {
 
 model Notification {
   id         String   @id @default(uuid())
-  createdAt  DateTime @default(now()) @map("created_at") @db.DateTime(0)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
   receiverId String
   receiver   User     @relation(name: "notification", fields: [receiverId], references: [id])
   actorId    String
