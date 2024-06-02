@@ -1,5 +1,7 @@
 const prisma = require('../prisma-client');
 
+const { replaceWhitespaceWithArrow } = require('../utils/string');
+
 const selectUserPreview = {
   id: true,
   avatar: true,
@@ -91,8 +93,15 @@ const searchByContent = async ({ limit, page, keyword }) => {
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({
       where: {
-        OR: [{ content: { contains: keyword } }, { content: { search: keyword } }],
-        type: 'NEW'
+        AND: [
+          {
+            OR: [
+              { content: { contains: keyword } },
+              { content: { search: replaceWhitespaceWithArrow(keyword) } }
+            ]
+          },
+          { type: 'NEW' }
+        ]
       },
       select: selectPostWithPostRef,
       take: limit,
@@ -101,8 +110,15 @@ const searchByContent = async ({ limit, page, keyword }) => {
     }),
     prisma.post.count({
       where: {
-        OR: [{ content: { contains: keyword } }, { content: { search: keyword } }],
-        type: 'NEW'
+        AND: [
+          {
+            OR: [
+              { content: { contains: keyword } },
+              { content: { search: replaceWhitespaceWithArrow(keyword) } }
+            ]
+          },
+          { type: 'NEW' }
+        ]
       }
     })
   ]);

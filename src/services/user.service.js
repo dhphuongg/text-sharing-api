@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 
 const prisma = require('../prisma-client');
 const { constants } = require('../constants');
+const { replaceWhitespaceWithArrow } = require('../utils/string');
 
 const selectUser = {
   id: true,
@@ -71,9 +72,9 @@ const search = async ({ keyword, limit, page }) => {
     prisma.user.findMany({
       where: {
         OR: [
-          { username: { search: keyword } },
+          { username: { search: replaceWhitespaceWithArrow(keyword) } },
           { username: { contains: keyword } },
-          { fullName: { search: keyword } },
+          { fullName: { search: replaceWhitespaceWithArrow(keyword) } },
           { fullName: { contains: keyword } }
         ]
       },
@@ -84,9 +85,9 @@ const search = async ({ keyword, limit, page }) => {
     prisma.user.count({
       where: {
         OR: [
-          { username: { search: keyword } },
+          { username: { search: replaceWhitespaceWithArrow(keyword) } },
           { username: { contains: keyword } },
-          { fullName: { search: keyword } },
+          { fullName: { search: replaceWhitespaceWithArrow(keyword) } },
           { fullName: { contains: keyword } }
         ]
       }
