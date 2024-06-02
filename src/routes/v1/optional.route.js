@@ -16,6 +16,11 @@ router
     validate(userValidation.getByUsername),
     postController.getRepliesByUsername
   )
+  .get(
+    '/user/:username/reposts',
+    validate(userValidation.getByUsername),
+    postController.getRepostsByUsername
+  )
   .get('/post/:postId', validate(postValidation.getById), postController.getById)
   .get(
     '/post/:postId/reply',

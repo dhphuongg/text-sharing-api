@@ -171,6 +171,26 @@ const getRepliesByUsername = catchAsync(async (req, res, next) => {
   });
 });
 
+const getRepostsByUsername = catchAsync(async (req, res, next) => {
+  const { username } = pick(req.params, ['username']);
+  const { limit, page, sortBy } = getOptions(req.query);
+  const { posts, total } = await postService.getRepostsByUsername(username, {
+    limit,
+    page
+  });
+  if (req.auth)
+    for (let i = 0; i < posts.length; i++) {
+      await addFriendshipStatusForPostAuthor(req.auth.id, posts[i]);
+      posts[i].isLike = await postService.getLikeStatus(req.auth.id, posts[i].id);
+    }
+  res.status(httpStatus.OK).json({
+    code: httpStatus.OK,
+    message: constants.message.success,
+    data: { posts, limit, page, total, sortBy },
+    error: null
+  });
+});
+
 const editContentById = catchAsync(async (req, res, next) => {
   const { postId } = pick(req.params, ['postId']);
   const { content } = pick(req.body, ['content']);
@@ -321,6 +341,7 @@ module.exports = {
   getRepliesByPostId,
   getNewByUsername,
   getRepliesByUsername,
+  getRepostsByUsername,
   editContentById,
   deleteById,
   likePostById,
