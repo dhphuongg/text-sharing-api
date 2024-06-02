@@ -72,6 +72,20 @@ const getNewByUsername = async (username, { limit, page }) => {
   return { posts, total };
 };
 
+const getRepliesByUsername = async (username, { limit, page }) => {
+  const [posts, total] = await prisma.$transaction([
+    prisma.post.findMany({
+      where: { user: { username }, type: 'REPLY' },
+      select: selectPostWithPostRef,
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: { createdAt: 'desc' }
+    }),
+    prisma.post.count({ where: { user: { username }, type: 'REPLY' } })
+  ]);
+  return { posts, total };
+};
+
 const editContentById = async (id, content) => {
   const post = await prisma.post.update({
     where: { id },
@@ -138,6 +152,7 @@ module.exports = {
   getById,
   getRepliesByPostId,
   getNewByUsername,
+  getRepliesByUsername,
   editContentById,
   deleteById,
   searchByContent,

@@ -6,7 +6,16 @@ const { userController, postController } = require('../../controllers');
 
 router
   .get('/user/:username', validate(userValidation.getByUsername), userController.getByUsername)
-  .get('/user/:username/post', validate(userValidation.getByUsername), postController.getByUsername)
+  .get(
+    '/user/:username/post',
+    validate(userValidation.getByUsername),
+    postController.getNewByUsername
+  )
+  .get(
+    '/user/:username/replies',
+    validate(userValidation.getByUsername),
+    postController.getRepliesByUsername
+  )
   .get('/post/:postId', validate(postValidation.getById), postController.getById)
   .get(
     '/post/:postId/reply',
